@@ -1294,8 +1294,26 @@ window.addEventListener('DOMContentLoaded', function() {
       }
 
       const rawText = data.content.map(c => c.text || '').join('');
-      const clean = rawText.replace(/```json|```/g, '').trim();
-      const book = JSON.parse(clean);
+      console.log('AI raw response:', rawText.substring(0, 500));
+
+      // Strip markdown fences and find the JSON object
+      let clean = rawText.replace(/```json|```/g, '').trim();
+      // Find the first { and last } to extract just the JSON
+      const jsonStart = clean.indexOf('{');
+      const jsonEnd = clean.lastIndexOf('}');
+      if (jsonStart === -1 || jsonEnd === -1) {
+        throw new Error('AI did not return valid JSON. Raw: ' + clean.substring(0, 200));
+      }
+      clean = clean.substring(jsonStart, jsonEnd + 1);
+
+      let book;
+      try {
+        book = JSON.parse(clean);
+      } catch(parseErr) {
+        console.error('JSON parse error:', parseErr.message);
+        console.error('Attempted to parse:', clean.substring(0, 300));
+        throw new Error('Could not parse AI response: ' + parseErr.message);
+      }
 
       // Fill form fields
       fillForm(book);
@@ -1336,7 +1354,8 @@ window.addEventListener('DOMContentLoaded', function() {
 
     } catch (err) {
       console.error('AI error:', err);
-      showToast('⚠️ ' + (err.message || 'Could not analyze — check console for details'), '#e67e22');
+      const msg = err.message || 'Unknown error';
+      showToast('⚠️ ' + msg.substring(0, 80), '#e67e22');
     }
 
     overlay.classList.remove('analyzing');
