@@ -95,17 +95,12 @@
       border: 2px dashed rgba(201,149,42,0.4);
       padding: 2rem;
       text-align: center;
-      cursor: pointer;
       transition: all 0.25s;
-      position: relative;
       background: rgba(201,149,42,0.03);
     }
     .upload-zone:hover, .upload-zone.drag-over {
       border-color: var(--gold);
       background: rgba(201,149,42,0.08);
-    }
-    .upload-zone input[type=file] {
-      position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%;
     }
     .upload-icon { font-size: 2rem; margin-bottom: 0.6rem; }
     .upload-text { font-size: 0.95rem; opacity: 0.7; }
@@ -1045,9 +1040,10 @@
 <div class="toast" id="toast"></div>
 
 <script>
+window.addEventListener('DOMContentLoaded', function() {
   let currentCondition = '';
   let uploadedImageBase64 = '';
-  let currentLang = 'fr'; // 'fr' or 'en'
+  let currentLang = 'fr';
 
   function setLanguage(lang) {
     currentLang = lang;
@@ -1759,6 +1755,8 @@ Round prices to nearest $0.50. If you cannot clearly read the cover, make your b
 
   // Auto-calculate shipping on page load with defaults
   calculateShipping();
+
+}); // end DOMContentLoaded
 </script>
 </body>
 </html>
