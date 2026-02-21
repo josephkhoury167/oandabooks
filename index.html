@@ -164,7 +164,7 @@
     <a href="policy.html">Shipping &amp; Returns</a>
     <a class="nav-admin" href="/admin.html">Admin</a>
   </div>
-  <button class="cart-btn" onclick="toggleCart()">Panier &nbsp;<span class="cart-count" id="cartCount">0</span></button>
+  <button class="cart-btn" onclick="toggleCart()">Cart &nbsp;<span class="cart-count" id="cartCount">0</span></button>
 </nav>
 
 <section class="hero">
@@ -257,7 +257,7 @@
   </div>
 </div>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 const PAYPALME    = 'josephkhoury167';
 const STRIPE_LINK = '';
 const SHIPPING    = 4.99;
@@ -412,8 +412,4 @@ function checkoutPayPal(){
   const bookList=cart.map(b=>b.title).join(', ');
   const note=encodeURIComponent('O&A Books: '+bookList+' (incl. $'+SHIPPING.toFixed(2)+' shipping)');
   window.open('https://www.paypal.me/'+PAYPALME+'/'+total.toFixed(2)+'USD?note='+note,'_blank');
-  setTimeout(()=>{alert('After paying, please email us at hello@oandabooks.com with your shipping address and we\'ll post your books within 1–2 business days! 📚');},600);
-}
-
-function checkoutStripe(){
-  if(!STRIPE_LINK){
+  setTimeout(()=>{alert('After paying, please email us at hello@oandabooks
