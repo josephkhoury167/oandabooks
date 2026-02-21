@@ -292,7 +292,7 @@
   <div class="cart-footer" id="cartFooter" style="display:none;">
     <div id="cartTotals"></div>
     <div class="pay-label">Pay securely</div>
-    <button class="pay-stripe" onclick="checkoutStripe()">💳 &nbsp;Pay by card (coming soon)</button>
+    <button class="pay-stripe" onclick="checkoutStripe()">💳 &nbsp;Pay by card</button>
     <div class="pay-divider">or</div>
     <button class="pay-paypal" onclick="checkoutPayPal()">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M7.5 21L3 3h9.5c3.5 0 6 1.5 5.5 5.5C17.5 13 14 14.5 10.5 14.5H8L7.5 21z" fill="#003087"/><path d="M10.5 14.5H8L7.5 21l-1-5H3.5L5 9.5h5.5C14 9.5 15.5 11 15 13c-.5 1.5-2 1.5-4.5 1.5z" fill="#009cde"/></svg>
@@ -304,7 +304,6 @@
 
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 const PAYPALME    = 'josephkhoury167';
-const STRIPE_LINK = '';
 const SHIPPING    = 4.99;
 
 const CSS_BOOKS = [
@@ -481,5 +480,61 @@ function checkoutPayPal() {
   setTimeout(() => { alert('After paying, please email hello@oandabooks.com with your shipping address and we\'ll post your books within 1–2 business days! 📚'); }, 600);
 }
 
-function checkoutStripe() {
-  if (!STRIPE_LINK) 
+// ── STRIPE CHECKOUT (Cloudflare Worker backend) ──────────────
+// After deploying stripe-worker.js, paste your worker URL below:
+const WORKER_URL = 'https://oanda-stripe.pages.dev';
+
+async function checkoutStripe() {
+  if (!cart.length) return;
+
+  const btn = document.querySelector('.pay-stripe');
+  const originalText = btn.innerHTML;
+  btn.innerHTML = '⏳ Redirecting to checkout...';
+  btn.disabled = true;
+
+  const { total } = getCartTotals();
+
+  try {
+    const res = await fetch(WORKER_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        items: cart.map(b => ({ title: b.title, price: b.price })),
+        total: total.toFixed(2),
+        shipping: SHIPPING
+      })
+    });
+    const data = await res.json();
+    if (data.url) {
+      window.location.href = data.url;
+    } else {
+      throw new Error(data.error || 'No checkout URL');
+    }
+  } catch (err) {
+    console.error('Stripe error:', err);
+    alert('Card checkout is temporarily unavailable. Please use PayPal or try again shortly.');
+    btn.innerHTML = originalText;
+    btn.disabled = false;
+  }
+}
+
+// Handle return from Stripe (success or cancel)
+(function handleStripeReturn() {
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('payment') === 'success') {
+    cart = [];
+    updateCartUI();
+    setTimeout(() => {
+      alert('Payment received! Please email hello@oandabooks.com with your shipping address and we\'ll post your books within 1-2 business days.');
+    }, 400);
+    window.history.replaceState({}, '', '/');
+  } else if (params.get('payment') === 'cancelled') {
+    setTimeout(() => toggleCart(), 300);
+    window.history.replaceState({}, '', '/');
+  }
+})();
+
+init();
+</script>
+</body>
+</html>
