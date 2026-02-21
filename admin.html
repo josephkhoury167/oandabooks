@@ -1222,30 +1222,35 @@ window.addEventListener('DOMContentLoaded', function() {
     overlay.classList.add('analyzing');
     document.getElementById('analyzeBtn').disabled = true;
 
-    const isFrench = currentLang === 'fr';
-    const prompt = `You are an expert in children's books and a second-hand book pricing specialist for the US eBay market.
+    const bookType = isFrench
+      ? 'one of: Roman (novel), Bande dessinee (BD), Livre illustre, Livre de classe, Lot de livres'
+      : 'one of: Novel, Picture book, Graphic novel, Chapter book, Book set / lot';
+    const ebayDescHint = isFrench
+      ? 'Mention the French title, why it is great for French immersion students, the reading level, and honest condition.'
+      : 'Mention the title, why kids love it, the reading level, and honest condition.';
+    const scarcityNote = isFrench
+      ? 'French immersion books in the US are 30-50% more expensive than English equivalents due to scarcity.'
+      : '';
 
-This is a ${isFrench ? 'FRENCH' : 'ENGLISH'} book. Analyze this book cover and return ONLY a valid JSON object (no markdown, no extra text) with ALL of these fields:
-{
-  "title": "exact book title",
-  "author": "author full name",
-  "series": "series name if part of a series, else empty string",
-  "volume": "volume number if applicable, else empty string",
-  "age_range": "one of: 4-6, 6-8, 8-10, 10-13, 13+",
-  "book_type": ${isFrench
-    ? '"one of: Roman (novel), Bande dessinée (BD), Livre illustré, Livre de classe, Lot de livres"'
-    : '"one of: Novel, Picture book, Graphic novel, Chapter book, Book set / lot"'},
-  "condition_estimate": "one of: Like New / Comme neuf, Very Good / Très bon état, Good / Bon état, Acceptable / État correct",
-  "ebay_description": "A compelling 3-4 sentence eBay listing description in English. ${isFrench ? 'Mention the French title, why it\'s great for French immersion students, the reading level, and honest condition.' : 'Mention the title, why kids love it, the reading level, and honest condition.'} Warm and inviting tone — family-run shop.",
-  "tags": ["5-7 relevant eBay search tags"],
-  "price_budget": <number — low-end price, good deal for buyer>,
-  "price_fair": <number — fair market price based on eBay sold listings>,
-  "price_premium": <number — premium price for hard-to-find or collectible copies>,
-  "price_reasoning": "1-2 sentences on pricing rationale mentioning scarcity and condition"
-}
-
-${isFrench ? 'French immersion books in the US are 30-50% more expensive than English equivalents due to scarcity.' : ''}
-Round prices to nearest $0.50. If you cannot clearly read the cover, make your best educated guess.`;
+    const prompt = 'You are an expert in children\'s books and a second-hand book pricing specialist for the US eBay market.\n\n' +
+      'This is a ' + (isFrench ? 'FRENCH' : 'ENGLISH') + ' book. Analyze this book cover and return ONLY a valid JSON object (no markdown, no extra text) with ALL of these fields:\n' +
+      '{\n' +
+      '  "title": "exact book title",\n' +
+      '  "author": "author full name",\n' +
+      '  "series": "series name if part of a series, else empty string",\n' +
+      '  "volume": "volume number if applicable, else empty string",\n' +
+      '  "age_range": "one of: 4-6, 6-8, 8-10, 10-13, 13+",\n' +
+      '  "book_type": "' + bookType + '",\n' +
+      '  "condition_estimate": "one of: Like New / Comme neuf, Very Good / Tres bon etat, Good / Bon etat, Acceptable / Etat correct",\n' +
+      '  "ebay_description": "A compelling 3-4 sentence eBay listing description in English. ' + ebayDescHint + ' Warm and inviting tone — family-run shop.",\n' +
+      '  "tags": ["5-7 relevant eBay search tags"],\n' +
+      '  "price_budget": 0,\n' +
+      '  "price_fair": 0,\n' +
+      '  "price_premium": 0,\n' +
+      '  "price_reasoning": "1-2 sentences on pricing rationale mentioning scarcity and condition"\n' +
+      '}\n\n' +
+      scarcityNote + '\n' +
+      'Replace the 0 values with real price numbers. Round prices to nearest $0.50. If you cannot clearly read the cover, make your best educated guess.';
 
     try {
       const response = await fetch('https://api.anthropic.com/v1/messages', {
@@ -1322,42 +1327,6 @@ Round prices to nearest $0.50. If you cannot clearly read the cover, make your b
         showToast('✅ Book analyzed successfully!');
       }
 
-    } catch (err) {
-      console.error('AI error:', err);
-      showToast('⚠️ ' + (err.message || 'Could not analyze — check console for details'), '#e67e22');
-    }
-
-    overlay.classList.remove('analyzing');
-    document.getElementById('analyzeBtn').disabled = false;
-    document.getElementById('analyzeBtn').textContent = '✦ Re-analyze Cover';
-  }
-          messages: [{
-            role: 'user',
-            content: [
-              { type: 'image', source: { type: 'base64', media_type: 'image/jpeg', data: uploadedImageBase64 } },
-              { type: 'text', text: prompt }
-            ]
-          }]
-        })
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        const errMsg = data.error?.message || JSON.stringify(data);
-        showToast('⚠️ API error: ' + errMsg, '#e67e22');
-        console.error('Anthropic API error:', data);
-        overlay.classList.remove('analyzing');
-        document.getElementById('analyzeBtn').disabled = false;
-        document.getElementById('analyzeBtn').textContent = '✦ Re-analyze Cover';
-        return;
-      }
-
-      const rawText = data.content.map(c => c.text || '').join('');
-      const clean = rawText.replace(/```json|```/g, '').trim();
-      const book = JSON.parse(clean);
-
-      fillForm(book);
     } catch (err) {
       console.error('AI error:', err);
       showToast('⚠️ ' + (err.message || 'Could not analyze — check console for details'), '#e67e22');
