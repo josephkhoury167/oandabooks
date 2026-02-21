@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Shipping &amp; Returns — O&amp;A Books</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --white:#ffffff; --off:#f8f5f0; --warm:#ede8e0;
+      --ink:#1c1a17; --mid:#4a4640; --muted:#9a9088; --line:#e2ddd6;
+      --terra:#b85c38; --terra-lt:#f2e8e3; --terra-dk:#8f3e22;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    html{scroll-behavior:smooth;}
+    body{background:var(--white);color:var(--ink);font-family:'Jost',sans-serif;font-weight:300;line-height:1.7;}
+
+    nav{background:var(--white);border-bottom:1px solid var(--line);padding:0 5vw;display:flex;align-items:center;justify-content:space-between;height:62px;position:sticky;top:0;z-index:500;}
+    .nav-logo{font-family:'Cormorant Garamond',serif;font-weight:600;font-size:1.45rem;color:var(--ink);text-decoration:none;letter-spacing:0.12em;text-transform:uppercase;}
+    .nav-links{display:flex;gap:2.2rem;}
+    .nav-links a{color:var(--mid);text-decoration:none;font-size:0.72rem;font-weight:500;letter-spacing:0.14em;text-transform:uppercase;transition:color 0.2s;border-bottom:1px solid transparent;}
+    .nav-links a:hover{color:var(--ink);border-bottom-color:var(--ink);}
+
+    .page-hero{background:var(--off);padding:4rem 5vw;border-bottom:1px solid var(--line);}
+    .hero-eyebrow{font-size:0.65rem;font-weight:500;letter-spacing:0.2em;text-transform:uppercase;color:var(--terra);margin-bottom:1rem;}
+    .page-hero h1{font-family:'Cormorant Garamond',serif;font-weight:500;font-size:clamp(2.2rem,4vw,3.5rem);letter-spacing:0.02em;line-height:1.1;margin-bottom:0.8rem;}
+    .page-hero h1 em{font-style:italic;color:var(--terra);}
+    .page-hero p{font-size:0.88rem;color:var(--muted);max-width:50ch;}
+
+    .quick-bar{background:var(--ink);padding:0.7rem 5vw;display:flex;gap:2.5rem;flex-wrap:wrap;align-items:center;}
+    .qp{display:flex;align-items:center;gap:0.6rem;color:rgba(255,255,255,0.6);font-size:0.68rem;font-weight:400;letter-spacing:0.12em;text-transform:uppercase;}
+    .qp-dot{width:3px;height:3px;background:var(--terra);border-radius:50%;}
+
+    .main{max-width:820px;margin:0 auto;padding:3.5rem 5vw 6rem;}
+
+    .section{margin-bottom:3.5rem;animation:fadeUp 0.5s ease both;}
+    .section:nth-child(2){animation-delay:0.05s;} .section:nth-child(3){animation-delay:0.1s;}
+    .section:nth-child(4){animation-delay:0.15s;} .section:nth-child(5){animation-delay:0.2s;}
+    .section:nth-child(6){animation-delay:0.25s;}
+
+    .sec-head{display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem;padding-bottom:1rem;border-bottom:1px solid var(--line);}
+    .sec-title{font-family:'Cormorant Garamond',serif;font-weight:500;font-size:1.4rem;letter-spacing:0.08em;text-transform:uppercase;}
+    .sec-num{font-family:'Cormorant Garamond',serif;font-size:1rem;color:var(--terra);font-weight:400;letter-spacing:0.08em;}
+
+    .card-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:1px;margin-bottom:1.5rem;background:var(--line);}
+    .card{background:var(--white);padding:1.4rem 1.5rem;}
+    .card-label{font-size:0.62rem;font-weight:500;letter-spacing:0.16em;text-transform:uppercase;color:var(--muted);margin-bottom:0.5rem;}
+    .card-value{font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:500;color:var(--ink);margin-bottom:0.4rem;}
+    .card-desc{font-size:0.78rem;color:var(--muted);line-height:1.6;}
+    .card.accent .card-value{color:var(--terra);}
+
+    .prose{font-size:0.88rem;color:var(--mid);line-height:1.8;}
+    .prose p{margin-bottom:0.9rem;} .prose p:last-child{margin-bottom:0;}
+    .prose strong{color:var(--ink);font-weight:500;}
+    .prose a{color:var(--terra);text-decoration:none;} .prose a:hover{text-decoration:underline;}
+
+    .steps{display:flex;flex-direction:column;gap:0;}
+    .step{display:flex;gap:1.2rem;padding:1.2rem 0;border-bottom:1px solid var(--line);}
+    .step:first-child{border-top:1px solid var(--line);}
+    .step-num{font-family:'Cormorant Garamond',serif;font-size:1.3rem;color:var(--terra);min-width:28px;flex-shrink:0;font-weight:400;}
+    .step h4{font-size:0.82rem;font-weight:500;letter-spacing:0.06em;margin-bottom:0.3rem;color:var(--ink);}
+    .step p{font-size:0.78rem;color:var(--muted);line-height:1.65;}
+
+    .cond-table{width:100%;border-collapse:collapse;font-size:0.82rem;}
+    .cond-table th{background:var(--off);color:var(--mid);padding:0.7rem 1rem;text-align:left;font-size:0.62rem;letter-spacing:0.14em;text-transform:uppercase;font-weight:500;border-bottom:1px solid var(--line);}
+    .cond-table td{padding:0.75rem 1rem;border-bottom:1px solid var(--line);vertical-align:top;color:var(--mid);}
+    .cond-table tr:last-child td{border-bottom:none;}
+    .cond-table tr:hover td{background:var(--off);}
+    .cb{font-size:0.62rem;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--terra);}
+
+    .hi-box{background:var(--terra-lt);border-left:3px solid var(--terra);padding:1rem 1.2rem;font-size:0.82rem;color:var(--terra-dk);line-height:1.7;margin-top:1.2rem;}
+    .hi-box strong{font-weight:500;}
+    .warn-box{background:var(--off);border-left:3px solid var(--muted);padding:1rem 1.2rem;font-size:0.8rem;color:var(--muted);line-height:1.7;margin-top:1rem;}
+
+    .contact-box{background:var(--off);border:1px solid var(--line);padding:3rem;text-align:center;margin-top:4rem;}
+    .contact-box h3{font-family:'Cormorant Garamond',serif;font-weight:500;font-size:2rem;letter-spacing:0.04em;margin-bottom:0.6rem;}
+    .contact-box h3 em{font-style:italic;color:var(--terra);}
+    .contact-box p{font-size:0.82rem;color:var(--muted);margin-bottom:1.5rem;}
+    .contact-link{display:inline-block;background:var(--ink);color:var(--white);padding:0.75rem 2rem;font-family:'Jost',sans-serif;font-size:0.72rem;font-weight:500;letter-spacing:0.16em;text-transform:uppercase;text-decoration:none;transition:background 0.2s;}
+    .contact-link:hover{background:var(--mid);}
+
+    footer{background:var(--ink);color:rgba(255,255,255,0.4);text-align:center;padding:2.5rem 5vw;font-size:0.72rem;letter-spacing:0.08em;}
+    footer strong{color:rgba(255,255,255,0.75);}
+    footer a{color:rgba(255,255,255,0.4);text-decoration:none;transition:color 0.2s;}
+    footer a:hover{color:rgba(255,255,255,0.8);}
+    .footer-links{display:flex;gap:2.5rem;justify-content:center;margin-bottom:1rem;flex-wrap:wrap;}
+
+    @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+    @media(max-width:600px){.nav-links{display:none;}.quick-bar{gap:1.2rem;}}
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="index.html">O&amp;A Books</a>
+  <div class="nav-links">
+    <a href="index.html">← Shop</a>
+    <a href="index.html#catalog">Browse books</a>
+  </div>
+</nav>
+
+<div class="page-hero">
+  <div class="hero-eyebrow">Store policies</div>
+  <h1>Shipping, Returns<br>&amp; <em>Buyer Protection</em></h1>
+  <p>We're a small, family-run shop and we want every order to make you happy. Here's how everything works.</p>
+</div>
+
+<div class="quick-bar">
+  <div class="qp"><span class="qp-dot"></span>Ships in 1–2 business days</div>
+  <div class="qp"><span class="qp-dot"></span>7-day return window</div>
+  <div class="qp"><span class="qp-dot"></span>Flat $4.99 shipping</div>
+  <div class="qp"><span class="qp-dot"></span>Tracking on every order</div>
+</div>
+
+<div class="main">
+
+  <div class="section">
+    <div class="sec-head"><span class="sec-num">01</span><div class="sec-title">Shipping</div></div>
+    <div class="card-grid">
+      <div class="card"><div class="card-label">Processing</div><div class="card-value">1–2 days</div><div class="card-desc">We pack and drop off within 2 business days — usually same day.</div></div>
+      <div class="card"><div class="card-label">Delivery</div><div class="card-value">3–7 days</div><div class="card-desc">Via USPS Media Mail — the most affordable carrier for books.</div></div>
+      <div class="card accent"><div class="card-label">Flat rate</div><div class="card-value">$4.99</div><div class="card-desc">Same price regardless of how many books you order.</div></div>
+    </div>
+    <div class="prose">
+      <p><strong>Every order includes a tracking number</strong> sent to the email you provide at checkout. Track anytime at usps.com.</p>
+      <p>We ship to all 50 US states. International shipping is not available yet.</p>
+      <p>Books are wrapped in bubble mailers or cardboard to arrive in the same condition they left us.</p>
+    </div>
+    <div class="warn-box">If tracking shows delivered but you didn't receive it, please check with neighbours and your local post office first. Still missing after 3 business days — email us and we'll open a USPS claim.</div>
+  </div>
+
+  <div class="section">
+    <div class="sec-head"><span class="sec-num">02</span><div class="sec-title">Returns &amp; Refunds</div></div>
+    <div class="prose" style="margin-bottom:1.2rem;"><p>We describe every book as honestly as we can. If something isn't right, we'll make it right.</p></div>
+    <div class="steps">
+      <div class="step"><div class="step-num">1</div><div><h4>Contact us within 7 days of delivery</h4><p>Email us with your order details and a photo of the issue. We reply within 24 hours.</p></div></div>
+      <div class="step"><div class="step-num">2</div><div><h4>We'll offer a full refund or replacement</h4><p>If the book wasn't as described, you'll receive a full refund including original shipping. No return required.</p></div></div>
+      <div class="step"><div class="step-num">3</div><div><h4>Refund in 3–5 business days</h4><p>Back to your original payment method — Stripe or PayPal.</p></div></div>
+    </div>
+    <div class="hi-box"><strong>Qualifies:</strong> Book significantly different from description · Wrong book sent · Damaged in shipping · Pages missing.<br><br><strong>Doesn't qualify:</strong> Change of mind · Minor wear that was noted in the listing.</div>
+  </div>
+
+  <div class="section">
+    <div class="sec-head"><span class="sec-num">03</span><div class="sec-title">Condition Guide</div></div>
+    <div class="prose" style="margin-bottom:1rem;"><p>Every book is graded before listing. Here's exactly what each grade means.</p></div>
+    <table class="cond-table">
+      <thead><tr><th>Grade</th><th>What it means</th><th>Typical signs</th></tr></thead>
+      <tbody>
+        <tr><td><span class="cb">Like New</span></td><td>Read once or twice at most.</td><td>No markings, spine barely creased.</td></tr>
+        <tr><td><span class="cb">Very Good</span></td><td>Light use. A lovely copy.</td><td>Minor spine crease, no writing, clean pages.</td></tr>
+        <tr><td><span class="cb">Good</span></td><td>Normal reading wear. Fully readable.</td><td>May have name inside, some cover wear, all pages intact.</td></tr>
+        <tr><td><span class="cb">Acceptable</span></td><td>Well-loved but complete. All issues listed explicitly.</td><td>Visible wear, possible highlighting. No surprises — everything is noted.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="sec-head"><span class="sec-num">04</span><div class="sec-title">Payments &amp; Security</div></div>
+    <div class="prose">
+      <p>We accept cards via <strong>Stripe</strong> and <strong>PayPal</strong>. Your card details are never seen or stored by us — payments happen entirely inside Stripe and PayPal's secure systems.</p>
+      <p>PayPal orders are covered by <strong>PayPal Buyer Protection</strong>. If something goes wrong, PayPal can step in on your behalf. Stripe payments include built-in fraud detection.</p>
+    </div>
+    <div class="hi-box">We always prefer to resolve issues directly — email us first. We respond fast and will make things right before any dispute is needed.</div>
+  </div>
+
+  <div class="section">
+    <div class="sec-head"><span class="sec-num">05</span><div class="sec-title">Discounts &amp; Bundles</div></div>
+    <div class="card-grid">
+      <div class="card"><div class="card-label">Multi-book</div><div class="card-value">15% off</div><div class="card-desc">Applied automatically when you add 2 or more books to your cart.</div></div>
+      <div class="card accent"><div class="card-label">Full series</div><div class="card-value">25% off</div><div class="card-desc">Buy 2+ books from the same series and save 25% on each.</div></div>
+    </div>
+    <div class="prose"><p>Discounts are calculated automatically — no codes needed. The best available discount applies; they do not stack.</p></div>
+  </div>
+
+  <div class="section">
+    <div class="sec-head"><span class="sec-num">06</span><div class="sec-title">Privacy</div></div>
+    <div class="prose">
+      <p>We collect only what's needed to complete your order: name, shipping address, and email. Payment information is handled entirely by Stripe and PayPal — we never store it.</p>
+      <p>We will never sell your information or send marketing emails. This site uses no tracking cookies or advertising pixels.</p>
+    </div>
+  </div>
+
+  <div class="contact-box">
+    <h3>A question?<br><em>Just write to us.</em></h3>
+    <p>We read every message and respond same day when school allows.</p>
+    <a class="contact-link" href="mailto:hello@oandabooks.com">hello@oandabooks.com</a>
+  </div>
+
+</
