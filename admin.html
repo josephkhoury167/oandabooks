@@ -1070,15 +1070,10 @@
   // ── FILE UPLOAD ──────────────────────────────────────
   const fileInput = document.getElementById('fileInput');
   const uploadZone = document.getElementById('uploadZone');
-
-  // photos array: [{dataUrl, base64}]
-  let photos = [];
-  let primaryIndex = 0; // which photo is the "cover" used for AI
-
-  // ── FILE UPLOAD ──────────────────────────────────────
-  const fileInput = document.getElementById('fileInput');
-  const uploadZone = document.getElementById('uploadZone');
   const browseBtn = document.getElementById('browseBtn');
+
+  let photos = [];
+  let primaryIndex = 0;
 
   // Browse button click
   browseBtn.addEventListener('click', function(e) {
