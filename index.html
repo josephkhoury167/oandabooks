@@ -16,6 +16,7 @@
     html{scroll-behavior:smooth;}
     body{background:var(--white);color:var(--ink);font-family:'Jost',sans-serif;font-weight:300;line-height:1.6;}
 
+    /* NAV */
     nav{background:var(--white);border-bottom:1px solid var(--line);padding:0 5vw;display:flex;align-items:center;justify-content:space-between;height:62px;position:sticky;top:0;z-index:500;}
     .nav-logo{font-family:'Cormorant Garamond',serif;font-weight:600;font-size:1.45rem;color:var(--ink);text-decoration:none;letter-spacing:0.12em;text-transform:uppercase;}
     .nav-center{display:flex;gap:2.2rem;align-items:center;}
@@ -28,6 +29,7 @@
     .cart-count{background:var(--terra);color:white;border-radius:50%;width:18px;height:18px;font-size:0.65rem;font-weight:500;display:flex;align-items:center;justify-content:center;}
     .cart-count.bump{animation:bump 0.3s ease;}
 
+    /* HERO */
     .hero{display:grid;grid-template-columns:1fr 1fr;min-height:480px;}
     .hero-text{background:var(--off);padding:5rem 5vw;display:flex;flex-direction:column;justify-content:center;}
     .hero-eyebrow{font-size:0.68rem;font-weight:500;letter-spacing:0.2em;text-transform:uppercase;color:var(--terra);margin-bottom:1.2rem;animation:fadeUp 0.7s ease both;}
@@ -38,22 +40,23 @@
     .hero-cta:hover{background:var(--white);color:var(--ink);}
     .hero-visual{background:var(--warm);display:flex;align-items:center;justify-content:center;overflow:hidden;padding:2.5rem 2rem;}
     .hero-covers{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;width:100%;max-width:300px;}
-    .hero-cover{aspect-ratio:2/3;overflow:hidden;border-radius:2px;box-shadow:4px 4px 14px rgba(0,0,0,0.18);transition:transform 0.3s;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0.5rem;text-align:center;position:relative;}
+    .hero-cover{aspect-ratio:2/3;overflow:hidden;border-radius:2px;box-shadow:4px 4px 14px rgba(0,0,0,0.2);transition:transform 0.3s;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0.6rem;text-align:center;position:relative;}
     .hero-cover:hover{transform:translateY(-5px);}
     .hero-cover img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0;}
     .hero-cover.tall{grid-row:span 2;aspect-ratio:unset;}
-    .css-book-title{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:0.7rem;color:rgba(255,255,255,0.92);line-height:1.3;z-index:1;}
-    .css-book-author{font-size:0.55rem;color:rgba(255,255,255,0.6);margin-top:0.3rem;letter-spacing:0.06em;z-index:1;}
-    .css-book-flag{font-size:1rem;margin-bottom:0.4rem;z-index:1;}
+    .css-book-flag{font-size:1.1rem;margin-bottom:0.4rem;z-index:1;position:relative;}
+    .css-book-title{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:0.72rem;color:rgba(255,255,255,0.95);line-height:1.3;z-index:1;position:relative;}
+    .css-book-author{font-size:0.55rem;color:rgba(255,255,255,0.6);margin-top:0.3rem;letter-spacing:0.06em;z-index:1;position:relative;}
 
+    /* STRIPS */
     .strip{background:var(--ink);padding:0.75rem 5vw;display:flex;align-items:center;justify-content:center;gap:3rem;flex-wrap:wrap;}
     .strip-item{font-size:0.7rem;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.55);display:flex;align-items:center;gap:0.5rem;}
     .strip-dot{width:3px;height:3px;background:var(--terra);border-radius:50%;}
-
     .disc-bar{background:var(--terra-lt);border-top:1px solid #d9c0b5;border-bottom:1px solid #d9c0b5;padding:0.6rem 5vw;display:flex;align-items:center;justify-content:center;gap:2.5rem;flex-wrap:wrap;}
     .disc-item{display:flex;align-items:center;gap:0.5rem;font-size:0.72rem;color:var(--terra-dk);}
     .disc-tag{font-weight:600;}
 
+    /* FILTER */
     .filter-bar{background:var(--white);border-bottom:1px solid var(--line);padding:0.75rem 5vw;display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap;position:sticky;top:62px;z-index:200;}
     .filter-label{font-size:0.65rem;font-weight:500;letter-spacing:0.16em;text-transform:uppercase;color:var(--muted);margin-right:0.5rem;}
     .filter-btn{background:none;border:1px solid var(--line);color:var(--mid);padding:0.28rem 0.9rem;font-family:'Jost',sans-serif;font-size:0.68rem;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;transition:all 0.18s;}
@@ -65,12 +68,12 @@
     .search-wrap input::placeholder{color:var(--muted);}
     .search-icon{position:absolute;left:0.65rem;top:50%;transform:translateY(-50%);color:var(--muted);font-size:0.75rem;pointer-events:none;}
 
+    /* CATALOG */
     .catalog-section{padding:3rem 5vw 5rem;}
     .catalog-header{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:2.5rem;border-bottom:1px solid var(--line);padding-bottom:1rem;}
     .catalog-title{font-family:'Cormorant Garamond',serif;font-weight:500;font-size:1.6rem;letter-spacing:0.08em;text-transform:uppercase;}
     .catalog-count{font-size:0.72rem;color:var(--muted);}
     .book-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:2rem;}
-
     .book-card{display:flex;flex-direction:column;animation:fadeUp 0.5s ease both;}
     .book-img-wrap{height:260px;background:var(--off);display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative;margin-bottom:0.9rem;}
     .book-img-wrap img{width:100%;height:100%;object-fit:cover;transition:transform 0.4s;}
@@ -93,6 +96,7 @@
     .empty-state{text-align:center;padding:5rem 2rem;grid-column:1/-1;}
     .empty-state p{font-size:0.9rem;color:var(--muted);}
 
+    /* WHY */
     .why-section{background:var(--off);padding:4rem 5vw;border-top:1px solid var(--line);}
     .why-title{font-family:'Cormorant Garamond',serif;font-weight:500;font-size:clamp(1.8rem,3vw,2.6rem);text-align:center;margin-bottom:0.5rem;}
     .why-title em{font-style:italic;color:var(--terra);}
@@ -103,6 +107,7 @@
     .why-card h3{font-family:'Cormorant Garamond',serif;font-size:1.05rem;font-weight:500;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:0.5rem;}
     .why-card p{font-size:0.8rem;color:var(--muted);line-height:1.7;}
 
+    /* CART */
     .cart-backdrop{position:fixed;inset:0;background:rgba(28,26,23,0.4);z-index:600;opacity:0;pointer-events:none;transition:opacity 0.3s;}
     .cart-backdrop.open{opacity:1;pointer-events:all;}
     .cart-drawer{position:fixed;top:0;right:0;bottom:0;width:min(420px,100vw);background:var(--white);z-index:700;display:flex;flex-direction:column;transform:translateX(100%);transition:transform 0.38s cubic-bezier(0.4,0,0.2,1);border-left:1px solid var(--line);box-shadow:-4px 0 24px rgba(0,0,0,0.08);}
@@ -132,11 +137,12 @@
     .pay-label{font-size:0.62rem;font-weight:500;text-transform:uppercase;letter-spacing:0.16em;color:var(--muted);margin:1rem 0 0.7rem;}
     .pay-stripe{width:100%;background:var(--ink);color:white;border:1px solid var(--ink);padding:0.85rem;font-family:'Jost',sans-serif;font-size:0.75rem;font-weight:500;letter-spacing:0.14em;text-transform:uppercase;cursor:pointer;margin-bottom:0.6rem;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:0.5rem;}
     .pay-stripe:hover{background:var(--mid);}
-    .pay-paypal-me{width:100%;background:#ffc439;color:#003087;border:1px solid #e0a800;padding:0.85rem;font-family:'Jost',sans-serif;font-size:0.75rem;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;cursor:pointer;transition:background 0.2s;display:flex;align-items:center;justify-content:center;gap:0.6rem;}
-    .pay-paypal-me:hover{background:#f0b429;}
+    .pay-paypal{width:100%;background:#ffc439;color:#003087;border:1px solid #e0a800;padding:0.85rem;font-family:'Jost',sans-serif;font-size:0.75rem;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;cursor:pointer;transition:background 0.2s;display:flex;align-items:center;justify-content:center;gap:0.6rem;}
+    .pay-paypal:hover{background:#f0b429;}
     .pay-divider{text-align:center;font-size:0.65rem;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;margin:0.5rem 0;}
     .secure-note{text-align:center;font-size:0.65rem;color:var(--muted);margin-top:0.9rem;}
 
+    /* FOOTER */
     footer{background:var(--ink);color:rgba(255,255,255,0.4);text-align:center;padding:2.5rem 5vw;font-size:0.72rem;letter-spacing:0.08em;}
     footer strong{color:rgba(255,255,255,0.75);}
     footer a{color:rgba(255,255,255,0.4);text-decoration:none;transition:color 0.2s;}
@@ -162,9 +168,9 @@
   <div class="nav-center">
     <a href="#catalog">Shop</a>
     <a href="policy.html">Shipping &amp; Returns</a>
-    <a class="nav-admin" href="/admin.html">Admin</a>
+    <a class="nav-admin" href="admin.html">Admin</a>
   </div>
-  <button class="cart-btn" onclick="toggleCart()">Cart &nbsp;<span class="cart-count" id="cartCount">0</span></button>
+  <button class="cart-btn" onclick="toggleCart()">Panier &nbsp;<span class="cart-count" id="cartCount">0</span></button>
 </nav>
 
 <section class="hero">
@@ -175,9 +181,7 @@
     <a class="hero-cta" href="#catalog">Browse the collection</a>
   </div>
   <div class="hero-visual">
-    <div class="hero-covers" id="heroCovers">
-      <!-- populated dynamically from inventory -->
-    </div>
+    <div class="hero-covers" id="heroCovers"></div>
   </div>
 </section>
 
@@ -203,7 +207,7 @@
   <button class="filter-btn" onclick="filterBooks('available',this)">Available</button>
   <div class="search-wrap">
     <span class="search-icon">↳</span>
-    <input type="text" id="searchInput" placeholder="Search by title or author…" oninput="filterBooks('search',null)"/>
+    <input type="text" id="searchInput" placeholder="Search by title or author…" oninput="renderGrid()"/>
   </div>
 </div>
 
@@ -249,167 +253,199 @@
     <div class="pay-label">Pay securely</div>
     <button class="pay-stripe" onclick="checkoutStripe()">💳 &nbsp;Pay by card (coming soon)</button>
     <div class="pay-divider">or</div>
-    <button class="pay-paypal-me" onclick="checkoutPayPal()">
+    <button class="pay-paypal" onclick="checkoutPayPal()">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M7.5 21L3 3h9.5c3.5 0 6 1.5 5.5 5.5C17.5 13 14 14.5 10.5 14.5H8L7.5 21z" fill="#003087"/><path d="M10.5 14.5H8L7.5 21l-1-5H3.5L5 9.5h5.5C14 9.5 15.5 11 15 13c-.5 1.5-2 1.5-4.5 1.5z" fill="#009cde"/></svg>
       Pay with PayPal
     </button>
-    <div class="secure-note">🔒 &nbsp;Your payment details are never stored by us</div>
+    <div class="secure-note">🔒 Your payment details are never stored by us</div>
   </div>
 </div>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script>
 const PAYPALME    = 'josephkhoury167';
 const STRIPE_LINK = '';
 const SHIPPING    = 4.99;
 
-const SAMPLE_BOOKS = [];
-
-let cart=[], allBooks=[], currentFilter='all';
-
-function loadBooks(){
-  const saved=JSON.parse(localStorage.getItem('oa_published')||'[]');
-  allBooks=[...SAMPLE_BOOKS,...saved];
-  renderGrid();
-  renderHeroCovers();
-}
-
 const CSS_BOOKS = [
-  { title:'Le Petit Prince', author:'Saint-Exupéry', flag:'🇫🇷', bg:'#8b4513' },
-  { title:'Harry Potter', author:'J.K. Rowling', flag:'🇫🇷', bg:'#3d5c3a' },
-  { title:'Astérix', author:'Goscinny & Uderzo', flag:'🇫🇷', bg:'#c0392b' },
-  { title:"Charlotte's Web", author:'E.B. White', flag:'🇺🇸', bg:'#2c4a3e' },
-  { title:'La Cabane Magique', author:'Mary Pope Osborne', flag:'🇫🇷', bg:'#5c3d2e' },
-  { title:'Tintin au Tibet', author:'Hergé', flag:'🇫🇷', bg:'#1a3a5c' },
+  { title:'Le Petit Prince',      author:'Saint-Exupéry',     flag:'🇫🇷', bg:'#8b4513' },
+  { title:'Harry Potter',         author:'J.K. Rowling',      flag:'🇫🇷', bg:'#3d5c3a' },
+  { title:'Astérix',              author:'Goscinny & Uderzo', flag:'🇫🇷', bg:'#c0392b' },
+  { title:"Charlotte's Web",      author:'E.B. White',        flag:'🇺🇸', bg:'#2c4a3e' },
+  { title:'La Cabane Magique',    author:'Mary Pope Osborne', flag:'🇫🇷', bg:'#5c3d2e' },
+  { title:'Tintin au Tibet',      author:'Hergé',             flag:'🇫🇷', bg:'#1a3a5c' },
 ];
 
-function renderHeroCovers(){
-  const container=document.getElementById('heroCovers');
-  if(!container)return;
+let cart = [], allBooks = [], currentFilter = 'all';
 
-  // Use real inventory photos if 3+ available
-  const realBooks=allBooks.filter(b=>!b.sold&&b.photo);
-  if(realBooks.length>=3){
-    container.innerHTML=realBooks.slice(0,6).map((b,i)=>`
-      <div class="hero-cover ${i===0?'tall':''}" style="background:#e8e0d8;">
-        <img src="${b.photo}" alt="${b.title}" loading="lazy"/>
-      </div>`).join('');
-    return;
-  }
-
-  // Otherwise show styled CSS books
-  container.innerHTML=CSS_BOOKS.map((b,i)=>`
-    <div class="hero-cover ${i===0?'tall':''}" style="background:${b.bg};">
-      <div class="css-book-flag">${b.flag}</div>
-      <div class="css-book-title">${b.title}</div>
-      <div class="css-book-author">${b.author}</div>
-    </div>`).join('');
+function init() {
+  const saved = JSON.parse(localStorage.getItem('oa_published') || '[]');
+  allBooks = saved;
+  renderHeroCovers();
+  renderGrid();
 }
 
-function renderGrid(){
-  const grid=document.getElementById('bookGrid');
-  const count=document.getElementById('catalogCount');
-  grid.innerHTML='';
-  const visible=filterList();
-  count.textContent=`${visible.filter(b=>!b.sold).length} available`;
-  if(!visible.length && !allBooks.length){grid.innerHTML=`<div class="empty-state"><p style="font-family:'Cormorant Garamond',serif;font-size:1.4rem;margin-bottom:0.5rem;">Coming soon.</p><p>We're adding books now — check back shortly!</p></div>`;return;}
-  if(!visible.length){grid.innerHTML=`<div class="empty-state"><p>Nothing matches — try removing a filter.</p></div>`;return;}
-  visible.forEach((book,i)=>{
-    const inCart=cart.some(c=>c.id===book.id);
-    const card=document.createElement('div');
-    card.className='book-card';
-    card.style.animationDelay=(i*0.05)+'s';
-    const condShort=(book.condition||'').split(' ')[0];
-    card.innerHTML=`
-      <div class="book-img-wrap">
-        ${book.photo?`<img src="${book.photo}" alt="${book.title}" loading="lazy"/>`:`<div class="book-placeholder">📖</div>`}
-        <div class="lang-tag">${book.lang==='fr'?'🇫🇷':'🇺🇸'}</div>
-        <div class="cond-tag">${condShort}</div>
-        ${book.sold?`<div class="sold-overlay"><div class="sold-label">Sold</div></div>`:''}
-      </div>
-      ${book.series?`<div class="book-series">${book.series}</div>`:''}
-      <div class="book-title">${book.title}</div>
-      <div class="book-author">${book.author}</div>
-      <div class="book-age">Ages ${book.age}</div>
-      <div class="book-footer">
-        <div class="book-price">$${parseFloat(book.price).toFixed(2)}</div>
-        <button class="add-cart-btn ${inCart?'added':''}" onclick="addToCart('${book.id}')" ${book.sold?'disabled':''} id="cb-${book.id}">
-          ${book.sold?'Sold':inCart?'✓ Added':'Add to cart'}
-        </button>
-      </div>`;
+function renderHeroCovers() {
+  const container = document.getElementById('heroCovers');
+  if (!container) return;
+  const realBooks = allBooks.filter(b => !b.sold && b.photo);
+  if (realBooks.length >= 3) {
+    container.innerHTML = realBooks.slice(0,6).map((b,i) =>
+      '<div class="hero-cover' + (i===0?' tall':'') + '" style="background:#e8e0d8;">' +
+      '<img src="' + b.photo + '" alt="' + b.title + '" loading="lazy"/></div>'
+    ).join('');
+  } else {
+    container.innerHTML = CSS_BOOKS.map((b,i) =>
+      '<div class="hero-cover' + (i===0?' tall':'') + '" style="background:' + b.bg + ';">' +
+      '<div class="css-book-flag">' + b.flag + '</div>' +
+      '<div class="css-book-title">' + b.title + '</div>' +
+      '<div class="css-book-author">' + b.author + '</div>' +
+      '</div>'
+    ).join('');
+  }
+}
+
+function renderGrid() {
+  const grid = document.getElementById('bookGrid');
+  const countEl = document.getElementById('catalogCount');
+  const q = document.getElementById('searchInput').value.toLowerCase().trim();
+  const visible = allBooks.filter(b => {
+    const mf = currentFilter==='all' ? true
+      : currentFilter==='fr' ? b.lang==='fr'
+      : currentFilter==='en' ? b.lang==='en'
+      : currentFilter==='series' ? !!b.series
+      : currentFilter==='available' ? !b.sold : true;
+    const ms = !q || b.title.toLowerCase().includes(q) || b.author.toLowerCase().includes(q) || (b.series||'').toLowerCase().includes(q);
+    return mf && ms;
+  });
+  countEl.textContent = visible.filter(b=>!b.sold).length + ' available';
+  grid.innerHTML = '';
+  if (!allBooks.length) {
+    grid.innerHTML = '<div class="empty-state"><p style="font-family:\'Cormorant Garamond\',serif;font-size:1.4rem;margin-bottom:0.5rem;">Coming soon.</p><p>We\'re adding books now — check back shortly!</p></div>';
+    return;
+  }
+  if (!visible.length) {
+    grid.innerHTML = '<div class="empty-state"><p>Nothing matches — try removing a filter.</p></div>';
+    return;
+  }
+  visible.forEach((book, i) => {
+    const inCart = cart.some(c => c.id === book.id);
+    const card = document.createElement('div');
+    card.className = 'book-card';
+    card.style.animationDelay = (i * 0.05) + 's';
+    const condShort = (book.condition || '').split(' ')[0];
+    card.innerHTML =
+      '<div class="book-img-wrap">' +
+        (book.photo ? '<img src="' + book.photo + '" alt="' + book.title + '" loading="lazy"/>' : '<div class="book-placeholder">📖</div>') +
+        '<div class="lang-tag">' + (book.lang==='fr' ? '🇫🇷' : '🇺🇸') + '</div>' +
+        '<div class="cond-tag">' + condShort + '</div>' +
+        (book.sold ? '<div class="sold-overlay"><div class="sold-label">Sold</div></div>' : '') +
+      '</div>' +
+      (book.series ? '<div class="book-series">' + book.series + '</div>' : '') +
+      '<div class="book-title">' + book.title + '</div>' +
+      '<div class="book-author">' + book.author + '</div>' +
+      '<div class="book-age">Ages ' + book.age + '</div>' +
+      '<div class="book-footer">' +
+        '<div class="book-price">$' + parseFloat(book.price).toFixed(2) + '</div>' +
+        '<button class="add-cart-btn' + (inCart?' added':'') + '" onclick="addToCart(\'' + book.id + '\')" ' + (book.sold?'disabled':'') + ' id="cb-' + book.id + '">' +
+          (book.sold ? 'Sold' : inCart ? '✓ Added' : 'Add to cart') +
+        '</button>' +
+      '</div>';
     grid.appendChild(card);
   });
 }
 
-function filterList(){
-  const q=document.getElementById('searchInput').value.toLowerCase().trim();
-  return allBooks.filter(b=>{
-    const mf=currentFilter==='all'?true:currentFilter==='fr'?b.lang==='fr':currentFilter==='en'?b.lang==='en':currentFilter==='series'?!!b.series:currentFilter==='available'?!b.sold:true;
-    const ms=!q||b.title.toLowerCase().includes(q)||b.author.toLowerCase().includes(q)||(b.series||'').toLowerCase().includes(q);
-    return mf&&ms;
-  });
-}
-
-function filterBooks(f,btn){
-  if(f!=='search'){currentFilter=f;document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));if(btn)btn.classList.add('active');}
+function filterBooks(f, btn) {
+  currentFilter = f;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
   renderGrid();
 }
 
-function addToCart(id){
-  const book=allBooks.find(b=>b.id===id);
-  if(!book||book.sold||cart.some(c=>c.id===id))return;
+function addToCart(id) {
+  const book = allBooks.find(b => b.id === id);
+  if (!book || book.sold || cart.some(c => c.id === id)) return;
   cart.push({...book});
   updateCartUI();
-  const cc=document.getElementById('cartCount');
-  cc.classList.remove('bump');void cc.offsetWidth;cc.classList.add('bump');
-  const btn=document.getElementById('cb-'+id);
-  if(btn){btn.textContent='✓ Added';btn.classList.add('added');}
+  const cc = document.getElementById('cartCount');
+  cc.classList.remove('bump'); void cc.offsetWidth; cc.classList.add('bump');
+  const btn = document.getElementById('cb-' + id);
+  if (btn) { btn.textContent = '✓ Added'; btn.classList.add('added'); }
 }
 
-function removeFromCart(id){cart=cart.filter(c=>c.id!==id);updateCartUI();renderGrid();}
-
-function calcDiscount(){
-  const n=cart.length;if(!n)return{rate:0,label:''};
-  const sg={};cart.forEach(b=>{if(b.series)sg[b.series]=(sg[b.series]||0)+1;});
-  if(Object.values(sg).some(v=>v>=2))return{rate:0.25,label:'Series discount (25% off)'};
-  if(n>=2)return{rate:0.15,label:'Multi-book discount (15% off)'};
-  return{rate:0,label:''};
+function removeFromCart(id) {
+  cart = cart.filter(c => c.id !== id);
+  updateCartUI();
+  renderGrid();
 }
 
-function getCartTotals(){
-  const{rate}=calcDiscount();
-  const subtotal=cart.reduce((s,b)=>s+parseFloat(b.price),0);
-  const discAmt=subtotal*rate;
-  return{subtotal,discAmt,total:subtotal-discAmt+SHIPPING};
+function calcDiscount() {
+  if (!cart.length) return { rate: 0, label: '' };
+  const sg = {};
+  cart.forEach(b => { if (b.series) sg[b.series] = (sg[b.series]||0) + 1; });
+  if (Object.values(sg).some(v => v >= 2)) return { rate: 0.25, label: 'Series discount (25% off)' };
+  if (cart.length >= 2) return { rate: 0.15, label: 'Multi-book discount (15% off)' };
+  return { rate: 0, label: '' };
 }
 
-function updateCartUI(){
-  document.getElementById('cartCount').textContent=cart.length;
-  const itemsEl=document.getElementById('cartItems');
-  const footerEl=document.getElementById('cartFooter');
-  if(!cart.length){itemsEl.innerHTML=`<div class="cart-empty"><p>Your cart is empty.<br>Add something wonderful.</p></div>`;footerEl.style.display='none';return;}
-  const{rate,label}=calcDiscount();
-  const{subtotal,discAmt,total}=getCartTotals();
-  let html='';
-  cart.forEach(b=>{html+=`<div class="cart-item"><div class="ci-img">${b.photo?`<img src="${b.photo}" alt="${b.title}"/>`:'📖'}</div><div class="ci-info"><div class="ci-title">${b.title}</div><div class="ci-author">${b.author}</div><div class="ci-price">$${parseFloat(b.price).toFixed(2)}${rate>0?`<span class="ci-disc"> → $${(b.price*(1-rate)).toFixed(2)}</span>`:''}</div></div><button class="ci-remove" onclick="removeFromCart('${b.id}')">✕</button></div>`;});
-  if(rate>0)html+=`<div class="cart-disc-note">${label} applied</div>`;
-  itemsEl.innerHTML=html;
-  document.getElementById('cartTotals').innerHTML=`
-    <div class="total-row"><span>Subtotal</span><span>$${subtotal.toFixed(2)}</span></div>
-    ${rate>0?`<div class="total-row discount"><span>${label}</span><span>−$${discAmt.toFixed(2)}</span></div>`:''}
-    <div class="total-row"><span>Shipping</span><span>$${SHIPPING.toFixed(2)}</span></div>
-    <div class="total-row grand"><span>Total</span><span>$${total.toFixed(2)}</span></div>`;
-  footerEl.style.display='block';
+function getCartTotals() {
+  const { rate } = calcDiscount();
+  const subtotal = cart.reduce((s, b) => s + parseFloat(b.price), 0);
+  const discAmt = subtotal * rate;
+  return { subtotal, discAmt, total: subtotal - discAmt + SHIPPING };
 }
 
-function toggleCart(){
+function updateCartUI() {
+  document.getElementById('cartCount').textContent = cart.length;
+  const itemsEl = document.getElementById('cartItems');
+  const footerEl = document.getElementById('cartFooter');
+  if (!cart.length) {
+    itemsEl.innerHTML = '<div class="cart-empty"><p>Your cart is empty.<br>Add something wonderful.</p></div>';
+    footerEl.style.display = 'none';
+    return;
+  }
+  const { rate, label } = calcDiscount();
+  const { subtotal, discAmt, total } = getCartTotals();
+  let html = '';
+  cart.forEach(b => {
+    html += '<div class="cart-item">' +
+      '<div class="ci-img">' + (b.photo ? '<img src="' + b.photo + '" alt="' + b.title + '"/>' : '📖') + '</div>' +
+      '<div class="ci-info">' +
+        '<div class="ci-title">' + b.title + '</div>' +
+        '<div class="ci-author">' + b.author + '</div>' +
+        '<div class="ci-price">$' + parseFloat(b.price).toFixed(2) + (rate>0 ? '<span class="ci-disc"> → $' + (b.price*(1-rate)).toFixed(2) + '</span>' : '') + '</div>' +
+      '</div>' +
+      '<button class="ci-remove" onclick="removeFromCart(\'' + b.id + '\')">✕</button>' +
+    '</div>';
+  });
+  if (rate > 0) html += '<div class="cart-disc-note">' + label + ' applied</div>';
+  itemsEl.innerHTML = html;
+  document.getElementById('cartTotals').innerHTML =
+    '<div class="total-row"><span>Subtotal</span><span>$' + subtotal.toFixed(2) + '</span></div>' +
+    (rate > 0 ? '<div class="total-row discount"><span>' + label + '</span><span>−$' + discAmt.toFixed(2) + '</span></div>' : '') +
+    '<div class="total-row"><span>Shipping</span><span>$' + SHIPPING.toFixed(2) + '</span></div>' +
+    '<div class="total-row grand"><span>Total</span><span>$' + total.toFixed(2) + '</span></div>';
+  footerEl.style.display = 'block';
+}
+
+function toggleCart() {
   document.getElementById('cartDrawer').classList.toggle('open');
   document.getElementById('cartBackdrop').classList.toggle('open');
 }
 
-function checkoutPayPal(){
-  if(!cart.length)return;
-  const{total}=getCartTotals();
-  const bookList=cart.map(b=>b.title).join(', ');
-  const note=encodeURIComponent('O&A Books: '+bookList+' (incl. $'+SHIPPING.toFixed(2)+' shipping)');
-  window.open('https://www.paypal.me/'+PAYPALME+'/'+total.toFixed(2)+'USD?note='+note,'_blank');
-  setTimeout(()=>{alert('After paying, please email us at hello@oandabooks
+function checkoutPayPal() {
+  if (!cart.length) return;
+  const { total } = getCartTotals();
+  const note = encodeURIComponent('O&A Books: ' + cart.map(b=>b.title).join(', ') + ' (incl. $' + SHIPPING.toFixed(2) + ' shipping)');
+  window.open('https://www.paypal.me/' + PAYPALME + '/' + total.toFixed(2) + 'USD?note=' + note, '_blank');
+  setTimeout(() => { alert('After paying, please email hello@oandabooks.com with your shipping address and we\'ll post your books within 1–2 business days! 📚'); }, 600);
+}
+
+function checkoutStripe() {
+  if (!STRIPE_LINK) { alert('Card payments coming soon! Please use PayPal for now.'); return; }
+  window.open(STRIPE_LINK, '_blank');
+}
+
+init();
+</script>
+</body>
+</html>

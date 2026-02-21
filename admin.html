@@ -3,30 +3,40 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>O&A Books — Admin Dashboard</title>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <title>O&A Books — Admin</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet"/>
   <style>
     :root {
-      --forest: #1c2e1c;
-      --forest-mid: #2d4a2d;
-      --forest-light: #3d6b3d;
-      --gold: #c9952a;
-      --gold-light: #e8b84b;
-      --cream: #f7f3eb;
-      --parchment: #ede7d9;
-      --ink: #1a1a0f;
-      --muted: #7a7060;
-      --error: #c0392b;
-      --success: #27ae60;
-      --ebay-red: #e53238;
-    }
+      --white:    #ffffff;
+      --off:      #f8f5f0;
+      --warm:     #ede8e0;
+      --ink:      #1c1a17;
+      --mid:      #4a4640;
+      --muted:    #9a9088;
+      --line:     #e2ddd6;
+      --terra:    #b85c38;
+      --terra-lt: #f2e8e3;
+      --terra-dk: #8f3e22;
+      --success:  #27ae60;
+      --error:    #c0392b;
+      --ebay:     #e53238;
+      /* panel background — slightly warm dark for admin feel */
+      --panel:    #2a2725;
+      --panel-mid:#3a3733;
+      --panel-lt: #4a4744;
+      --gold:      #b85c38;
+      --forest:    #1c1a17;
+      --forest-mid:#2a2725;
+      --cream:     #ede8e0;
+      --gold-light:#d4724e;
+      --ebay-red:  #e53238;
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      background: var(--forest);
-      font-family: 'Outfit', sans-serif;
+      background: var(--ink);
+      font-family: 'Jost', sans-serif;
       font-weight: 300;
       min-height: 100vh;
-      color: var(--cream);
+      color: var(--warm);
     }
 
     /* ── HEADER ── */
@@ -228,7 +238,7 @@
     }
     .thumb-add:hover { border-color: var(--gold); color: var(--gold); background: rgba(201,149,42,0.1); }
     .thumb-add span { font-size: 0.62rem; letter-spacing: 0.06em; text-transform: uppercase; }
-    .thumb-add input[type=file] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
+    .thumb-add input[type=file] { display: none; }
     .photo-count-badge {
       font-size: 0.72rem;
       color: rgba(255,255,255,0.4);
@@ -1161,13 +1171,15 @@ window.addEventListener('DOMContentLoaded', function() {
     if (photos.length < 8) {
       const addTile = document.createElement('div');
       addTile.className = 'thumb-add';
-      addTile.innerHTML = `<span style="font-size:1.6rem;">+</span><span>Add more</span>`;
       const addInput = document.createElement('input');
       addInput.type = 'file';
       addInput.accept = 'image/*';
       addInput.multiple = true;
+      addInput.style.display = 'none';
       addInput.onchange = (e) => { handleFiles(Array.from(e.target.files)); e.target.value=''; };
       addTile.appendChild(addInput);
+      addTile.innerHTML += '<span style="font-size:1.6rem;">+</span><span>Add more</span>';
+      addTile.onclick = () => addInput.click();
       strip.appendChild(addTile);
     }
 
