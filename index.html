@@ -36,11 +36,13 @@
     .hero-desc{font-size:0.92rem;color:var(--mid);line-height:1.75;max-width:42ch;margin-bottom:2rem;animation:fadeUp 0.7s 0.16s ease both;}
     .hero-cta{display:inline-block;background:var(--ink);color:var(--white);padding:0.8rem 2rem;font-size:0.72rem;font-weight:500;letter-spacing:0.16em;text-transform:uppercase;text-decoration:none;border:1px solid var(--ink);transition:all 0.2s;animation:fadeUp 0.7s 0.22s ease both;align-self:flex-start;}
     .hero-cta:hover{background:var(--white);color:var(--ink);}
-    .hero-visual{background:var(--warm);display:flex;align-items:center;justify-content:center;overflow:hidden;}
-    .hero-book-stack{display:flex;flex-direction:column;align-items:flex-start;gap:3px;animation:fadeUp 0.7s 0.1s ease both;}
-    .hb{height:38px;border-radius:1px 5px 5px 1px;display:flex;align-items:center;padding:0 1rem;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:0.8rem;color:rgba(255,255,255,0.88);box-shadow:3px 3px 8px rgba(0,0,0,0.15);transition:transform 0.2s;cursor:default;white-space:nowrap;}
-    .hb:hover{transform:translateX(6px);}
-    .hb-1{background:#8b4513;width:230px;}.hb-2{background:#3d5c3a;width:270px;}.hb-3{background:#4a3728;width:210px;}.hb-4{background:#5c3d2e;width:250px;}.hb-5{background:#2c4a3e;width:195px;}.hb-6{background:#6b4226;width:280px;}
+    .hero-visual{background:var(--warm);display:flex;align-items:center;justify-content:center;overflow:hidden;padding:2rem;}
+    .hero-covers{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:100%;max-width:320px;}
+    .hero-cover{aspect-ratio:2/3;background:var(--line);overflow:hidden;border-radius:2px;box-shadow:3px 3px 12px rgba(0,0,0,0.15);transition:transform 0.3s;}
+    .hero-cover:hover{transform:translateY(-4px);}
+    .hero-cover img{width:100%;height:100%;object-fit:cover;}
+    .hero-cover-placeholder{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:1.8rem;background:var(--warm);color:var(--muted);}
+    .hero-cover.tall{grid-row:span 2;aspect-ratio:unset;}
 
     .strip{background:var(--ink);padding:0.75rem 5vw;display:flex;align-items:center;justify-content:center;gap:3rem;flex-wrap:wrap;}
     .strip-item{font-size:0.7rem;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.55);display:flex;align-items:center;gap:0.5rem;}
@@ -171,13 +173,8 @@
     <a class="hero-cta" href="#catalog">Browse the collection</a>
   </div>
   <div class="hero-visual">
-    <div class="hero-book-stack">
-      <div class="hb hb-1">Le Petit Prince</div>
-      <div class="hb hb-2">Harry Potter — French edition</div>
-      <div class="hb hb-3">Astérix le Gaulois</div>
-      <div class="hb hb-4">Charlotte's Web</div>
-      <div class="hb hb-5">La Cabane Magique</div>
-      <div class="hb hb-6">Tintin au Tibet</div>
+    <div class="hero-covers" id="heroCovers">
+      <!-- populated dynamically from inventory -->
     </div>
   </div>
 </section>
@@ -271,6 +268,26 @@ function loadBooks(){
   const saved=JSON.parse(localStorage.getItem('oa_published')||'[]');
   allBooks=[...SAMPLE_BOOKS,...saved];
   renderGrid();
+  renderHeroCovers();
+}
+
+function renderHeroCovers(){
+  const container=document.getElementById('heroCovers');
+  if(!container)return;
+  const available=allBooks.filter(b=>!b.sold&&b.photo).slice(0,6);
+  if(!available.length){
+    // Nice placeholder grid when no books yet
+    container.innerHTML=Array(6).fill(0).map((_,i)=>`
+      <div class="hero-cover ${i===0?'tall':''}">
+        <div class="hero-cover-placeholder">📚</div>
+      </div>`).join('');
+    return;
+  }
+  // First book is tall (spans 2 rows), rest are normal
+  container.innerHTML=available.map((b,i)=>`
+    <div class="hero-cover ${i===0?'tall':''}">
+      <img src="${b.photo}" alt="${b.title}" loading="lazy"/>
+    </div>`).join('');
 }
 
 function renderGrid(){
