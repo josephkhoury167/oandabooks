@@ -767,10 +767,11 @@
 
       <!-- Drop zone (shown until first photo) -->
       <div class="upload-zone" id="uploadZone">
-        <input type="file" id="fileInput" accept="image/*" multiple/>
+        <input type="file" id="fileInput" accept="image/*" multiple style="display:none;"/>
         <div class="upload-icon">📚</div>
-        <div class="upload-text">Drop photos here, or click to browse</div>
-        <div class="upload-sub">Add up to 8 photos · Front cover, back, spine, inside · JPG, PNG, WEBP</div>
+        <div class="upload-text">Drop photos here</div>
+        <button type="button" onclick="document.getElementById('fileInput').click()" style="margin-top:0.8rem;background:var(--gold);color:var(--forest);border:none;padding:0.55rem 1.4rem;font-family:'Outfit',sans-serif;font-size:0.78rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;border-radius:3px;">📂 Browse Files</button>
+        <div class="upload-sub" style="margin-top:0.6rem;">Up to 8 photos · JPG, PNG, WEBP</div>
       </div>
 
       <!-- Main large preview -->
@@ -1081,9 +1082,9 @@
     uploadZone.classList.remove('drag-over');
     handleFiles(Array.from(e.dataTransfer.files));
   });
-  fileInput.addEventListener('change', e => {
+  document.getElementById('fileInput').addEventListener('change', e => {
     handleFiles(Array.from(e.target.files));
-    e.target.value = ''; // reset so same file can be re-added after delete
+    e.target.value = '';
   });
 
   function handleFiles(files) {

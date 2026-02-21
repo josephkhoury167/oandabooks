@@ -271,22 +271,30 @@ function loadBooks(){
   renderHeroCovers();
 }
 
+// Real book cover URLs from Open Library (ISBN-based, always available)
+const STATIC_COVERS = [
+  { url:'https://covers.openlibrary.org/b/isbn/2070612783-L.jpg', title:'Le Petit Prince' },
+  { url:'https://covers.openlibrary.org/b/isbn/2070584628-L.jpg', title:'Harry Potter FR' },
+  { url:'https://covers.openlibrary.org/b/isbn/2012101453-L.jpg', title:'Astérix' },
+  { url:'https://covers.openlibrary.org/b/isbn/0064400557-L.jpg', title:"Charlotte's Web" },
+  { url:'https://covers.openlibrary.org/b/isbn/2013224028-L.jpg', title:'La Cabane Magique' },
+  { url:'https://covers.openlibrary.org/b/isbn/2203001445-L.jpg', title:'Tintin' },
+];
+
 function renderHeroCovers(){
   const container=document.getElementById('heroCovers');
   if(!container)return;
-  const available=allBooks.filter(b=>!b.sold&&b.photo).slice(0,6);
-  if(!available.length){
-    // Nice placeholder grid when no books yet
-    container.innerHTML=Array(6).fill(0).map((_,i)=>`
-      <div class="hero-cover ${i===0?'tall':''}">
-        <div class="hero-cover-placeholder">📚</div>
-      </div>`).join('');
-    return;
-  }
-  // First book is tall (spans 2 rows), rest are normal
-  container.innerHTML=available.map((b,i)=>`
+
+  // Use real inventory photos if we have 3+, otherwise use static covers
+  const realBooks=allBooks.filter(b=>!b.sold&&b.photo);
+  const covers = realBooks.length >= 3
+    ? realBooks.slice(0,6).map(b=>({ url: b.photo, title: b.title }))
+    : STATIC_COVERS;
+
+  container.innerHTML = covers.map((c,i)=>`
     <div class="hero-cover ${i===0?'tall':''}">
-      <img src="${b.photo}" alt="${b.title}" loading="lazy"/>
+      <img src="${c.url}" alt="${c.title}" loading="lazy"
+        onerror="this.parentElement.innerHTML='<div class=hero-cover-placeholder>📚</div>'"/>
     </div>`).join('');
 }
 
