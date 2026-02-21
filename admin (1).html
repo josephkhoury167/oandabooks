@@ -1,0 +1,1759 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>O&A Books — Admin Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --forest: #1c2e1c;
+      --forest-mid: #2d4a2d;
+      --forest-light: #3d6b3d;
+      --gold: #c9952a;
+      --gold-light: #e8b84b;
+      --cream: #f7f3eb;
+      --parchment: #ede7d9;
+      --ink: #1a1a0f;
+      --muted: #7a7060;
+      --error: #c0392b;
+      --success: #27ae60;
+      --ebay-red: #e53238;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--forest);
+      font-family: 'Outfit', sans-serif;
+      font-weight: 300;
+      min-height: 100vh;
+      color: var(--cream);
+    }
+
+    /* ── HEADER ── */
+    header {
+      background: var(--forest);
+      border-bottom: 1px solid rgba(201,149,42,0.3);
+      padding: 1.2rem 3rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 200;
+    }
+    .logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 1.5rem;
+      color: var(--gold);
+      letter-spacing: 0.02em;
+    }
+    .logo span { font-style: normal; font-size: 0.75rem; font-family: 'Outfit', sans-serif; color: rgba(255,255,255,0.4); display: block; letter-spacing: 0.12em; text-transform: uppercase; }
+    .header-badge {
+      background: rgba(201,149,42,0.15);
+      border: 1px solid rgba(201,149,42,0.4);
+      color: var(--gold);
+      font-size: 0.78rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.35rem 0.9rem;
+    }
+
+    /* ── MAIN LAYOUT ── */
+    .app {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2.5rem 2rem;
+      display: grid;
+      grid-template-columns: 1fr 420px;
+      gap: 2rem;
+      align-items: start;
+    }
+
+    /* ── PANELS ── */
+    .panel {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      padding: 2rem;
+      margin-bottom: 1.5rem;
+    }
+    .panel-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: var(--gold);
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding-bottom: 0.8rem;
+      border-bottom: 1px solid rgba(201,149,42,0.2);
+    }
+
+    /* ── PHOTO UPLOAD ── */
+    .upload-zone {
+      border: 2px dashed rgba(201,149,42,0.4);
+      padding: 2rem;
+      text-align: center;
+      transition: all 0.25s;
+      background: rgba(201,149,42,0.03);
+    }
+    .upload-zone:hover, .upload-zone.drag-over {
+      border-color: var(--gold);
+      background: rgba(201,149,42,0.08);
+    }
+    .upload-icon { font-size: 2rem; margin-bottom: 0.6rem; }
+    .upload-text { font-size: 0.95rem; opacity: 0.7; }
+    .upload-sub { font-size: 0.78rem; opacity: 0.4; margin-top: 0.3rem; }
+
+    /* Main photo preview */
+    #main-preview-wrap {
+      display: none;
+      position: relative;
+      margin-top: 1rem;
+      background: rgba(0,0,0,0.3);
+    }
+    #preview-img {
+      width: 100%;
+      max-height: 260px;
+      object-fit: contain;
+      display: block;
+    }
+    .main-photo-label {
+      position: absolute;
+      top: 0.5rem; left: 0.5rem;
+      background: var(--gold);
+      color: var(--forest);
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 0.2rem 0.55rem;
+    }
+    .preview-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(28,46,28,0.85);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.8rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+    .preview-overlay.analyzing { opacity: 1; pointer-events: all; }
+    .spinner {
+      width: 40px; height: 40px;
+      border: 3px solid rgba(201,149,42,0.2);
+      border-top-color: var(--gold);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    .analyze-text { color: var(--gold); font-size: 0.9rem; letter-spacing: 0.06em; }
+
+    /* Thumbnail strip */
+    .thumb-strip {
+      display: none;
+      gap: 0.6rem;
+      margin-top: 0.8rem;
+      flex-wrap: wrap;
+      align-items: flex-start;
+    }
+    .thumb-strip.visible { display: flex; }
+    .thumb-wrap {
+      position: relative;
+      width: 76px;
+      height: 76px;
+      cursor: pointer;
+      flex-shrink: 0;
+      border: 2px solid rgba(255,255,255,0.1);
+      transition: border-color 0.2s;
+      animation: fadeIn 0.3s ease both;
+    }
+    .thumb-wrap:hover { border-color: var(--gold-light); }
+    .thumb-wrap.active { border-color: var(--gold); box-shadow: 0 0 0 1px var(--gold); }
+    .thumb-wrap img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .thumb-del {
+      position: absolute;
+      top: -7px; right: -7px;
+      width: 20px; height: 20px;
+      background: var(--error);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      font-size: 0.75rem;
+      line-height: 20px;
+      text-align: center;
+      cursor: pointer;
+      opacity: 0;
+      transition: opacity 0.15s;
+      z-index: 2;
+    }
+    .thumb-wrap:hover .thumb-del { opacity: 1; }
+    .thumb-primary-badge {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      background: rgba(201,149,42,0.88);
+      color: var(--forest);
+      font-size: 0.58rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-align: center;
+      text-transform: uppercase;
+      padding: 0.15rem 0;
+    }
+    /* Add more photos tile */
+    .thumb-add {
+      width: 76px;
+      height: 76px;
+      border: 2px dashed rgba(201,149,42,0.35);
+      background: rgba(201,149,42,0.04);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: rgba(201,149,42,0.6);
+      font-size: 1.4rem;
+      gap: 0.15rem;
+      transition: all 0.2s;
+      position: relative;
+      flex-shrink: 0;
+    }
+    .thumb-add:hover { border-color: var(--gold); color: var(--gold); background: rgba(201,149,42,0.1); }
+    .thumb-add span { font-size: 0.62rem; letter-spacing: 0.06em; text-transform: uppercase; }
+    .thumb-add input[type=file] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
+    .photo-count-badge {
+      font-size: 0.72rem;
+      color: rgba(255,255,255,0.4);
+      letter-spacing: 0.06em;
+      margin-top: 0.4rem;
+    }
+    .photo-count-badge strong { color: var(--gold); }
+
+    .analyze-btn {
+      display: none;
+      width: 100%;
+      margin-top: 1rem;
+      background: var(--gold);
+      color: var(--forest);
+      border: none;
+      padding: 0.9rem;
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.15s;
+    }
+    .analyze-btn:hover { background: var(--gold-light); transform: translateY(-2px); }
+
+    /* ── FORM FIELDS ── */
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+    .form-row.single { grid-template-columns: 1fr; }
+    .form-row.triple { grid-template-columns: 1fr 1fr 1fr; }
+
+    .field { display: flex; flex-direction: column; gap: 0.4rem; }
+    .field label {
+      font-size: 0.73rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: rgba(255,255,255,0.45);
+      font-weight: 500;
+    }
+    .field input, .field select, .field textarea {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: var(--cream);
+      padding: 0.7rem 0.9rem;
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 300;
+      outline: none;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .field input:focus, .field select:focus, .field textarea:focus {
+      border-color: var(--gold);
+      background: rgba(201,149,42,0.07);
+    }
+    .field select option { background: var(--forest); color: var(--cream); }
+    .field textarea { min-height: 120px; resize: vertical; line-height: 1.6; }
+    .field input.ai-filled, .field select.ai-filled, .field textarea.ai-filled {
+      border-color: rgba(201,149,42,0.5);
+      background: rgba(201,149,42,0.06);
+    }
+
+    .ai-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      font-size: 0.68rem;
+      color: var(--gold);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-top: 0.25rem;
+      opacity: 0;
+      transition: opacity 0.4s;
+    }
+    .ai-badge.visible { opacity: 1; }
+
+    /* ── CONDITION SELECTOR ── */
+    .condition-btns { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .cond-btn {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: rgba(255,255,255,0.6);
+      padding: 0.45rem 1rem;
+      font-size: 0.82rem;
+      font-family: 'Outfit', sans-serif;
+      cursor: pointer;
+      transition: all 0.2s;
+      letter-spacing: 0.04em;
+    }
+    .cond-btn:hover { border-color: var(--gold); color: var(--gold); }
+    .cond-btn.active { background: var(--gold); color: var(--forest); border-color: var(--gold); font-weight: 600; }
+
+    /* ── SHIPPING CALCULATOR ── */
+    .shipping-calc {
+      background: rgba(201,149,42,0.05);
+      border: 1px solid rgba(201,149,42,0.2);
+      padding: 1.2rem;
+      margin-top: 0.5rem;
+    }
+    .ship-row { display: flex; gap: 1rem; margin-bottom: 0.8rem; }
+    .ship-row .field { flex: 1; }
+    .ship-result {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 0.8rem;
+      border-top: 1px solid rgba(201,149,42,0.2);
+      font-size: 0.88rem;
+    }
+    .ship-result .label { opacity: 0.6; }
+    .ship-result .value { color: var(--gold); font-weight: 600; font-size: 1rem; }
+    .ship-calc-btn {
+      background: transparent;
+      border: 1px solid var(--gold);
+      color: var(--gold);
+      padding: 0.5rem 1rem;
+      font-size: 0.8rem;
+      font-family: 'Outfit', sans-serif;
+      cursor: pointer;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      transition: all 0.2s;
+    }
+    .ship-calc-btn:hover { background: var(--gold); color: var(--forest); }
+
+    /* ── RIGHT PANEL: PREVIEW + DISCOUNTS ── */
+    .preview-panel { position: sticky; top: 80px; }
+
+    /* ── EBAY PREVIEW ── */
+    .ebay-preview {
+      background: #fff;
+      color: #333;
+      font-family: 'Outfit', sans-serif;
+      overflow: hidden;
+    }
+    .ebay-header {
+      background: var(--ebay-red);
+      padding: 0.6rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .ebay-logo { color: white; font-weight: 700; font-size: 1rem; letter-spacing: -0.02em; }
+    .ebay-sub { color: rgba(255,255,255,0.7); font-size: 0.72rem; letter-spacing: 0.06em; text-transform: uppercase; margin-left: auto; }
+    .ebay-body { padding: 1.2rem; }
+    .ebay-book-title {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #1a1a1a;
+      margin-bottom: 0.4rem;
+      line-height: 1.3;
+      min-height: 2.4em;
+    }
+    .ebay-price-row {
+      display: flex;
+      align-items: baseline;
+      gap: 0.5rem;
+      margin: 0.8rem 0;
+    }
+    .ebay-price { font-size: 1.4rem; font-weight: 700; color: var(--ebay-red); }
+    .ebay-condition {
+      background: #e8f5e9;
+      color: #2e7d32;
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 0.2rem 0.5rem;
+      letter-spacing: 0.04em;
+    }
+    .ebay-desc {
+      font-size: 0.82rem;
+      color: #555;
+      line-height: 1.6;
+      border-top: 1px solid #eee;
+      padding-top: 0.8rem;
+      margin-top: 0.8rem;
+      min-height: 80px;
+      white-space: pre-wrap;
+    }
+    .ebay-shipping-line {
+      font-size: 0.78rem;
+      color: #2e7d32;
+      margin-top: 0.6rem;
+      font-weight: 500;
+    }
+    .ebay-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.8rem; }
+    .ebay-tag {
+      background: #f0f0f0;
+      color: #555;
+      font-size: 0.7rem;
+      padding: 0.2rem 0.5rem;
+      border-radius: 2px;
+    }
+
+    /* ── DISCOUNT PANEL ── */
+    .discount-panel { margin-top: 1.5rem; }
+    .discount-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.8rem 0;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      font-size: 0.88rem;
+    }
+    .discount-row:last-child { border-bottom: none; }
+    .disc-name { display: flex; align-items: center; gap: 0.5rem; }
+    .disc-badge {
+      background: rgba(201,149,42,0.2);
+      color: var(--gold);
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 0.2rem 0.5rem;
+      letter-spacing: 0.06em;
+    }
+    .disc-desc { font-size: 0.78rem; opacity: 0.5; margin-top: 0.15rem; }
+    .toggle-switch {
+      position: relative;
+      width: 42px; height: 24px;
+    }
+    .toggle-switch input { opacity: 0; width: 0; height: 0; }
+    .toggle-slider {
+      position: absolute;
+      cursor: pointer;
+      inset: 0;
+      background: rgba(255,255,255,0.1);
+      border-radius: 12px;
+      transition: 0.3s;
+    }
+    .toggle-slider:before {
+      content: '';
+      position: absolute;
+      width: 18px; height: 18px;
+      left: 3px; top: 3px;
+      background: rgba(255,255,255,0.5);
+      border-radius: 50%;
+      transition: 0.3s;
+    }
+    .toggle-switch input:checked + .toggle-slider { background: var(--gold); }
+    .toggle-switch input:checked + .toggle-slider:before { transform: translateX(18px); background: white; }
+
+    /* ── POST BUTTON ── */
+    .post-btn {
+      width: 100%;
+      background: var(--ebay-red);
+      color: white;
+      border: none;
+      padding: 1rem;
+      font-family: 'Outfit', sans-serif;
+      font-size: 1rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      cursor: pointer;
+      margin-top: 1.5rem;
+      transition: background 0.2s, transform 0.15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+    }
+    .post-btn:hover { background: #c02029; transform: translateY(-2px); }
+    .post-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+    .save-btn {
+      width: 100%;
+      background: transparent;
+      color: var(--gold);
+      border: 1px solid var(--gold);
+      padding: 0.8rem;
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.88rem;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      cursor: pointer;
+      margin-top: 0.7rem;
+      transition: all 0.2s;
+    }
+    .save-btn:hover { background: rgba(201,149,42,0.12); }
+
+    /* ── SUCCESS TOAST ── */
+    .toast {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: var(--success);
+      color: white;
+      padding: 1rem 1.5rem;
+      font-size: 0.9rem;
+      font-weight: 500;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.4s;
+      z-index: 999;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+    .toast.show { transform: translateY(0); opacity: 1; }
+
+    /* ── ANIMATIONS ── */
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    .fade-in { animation: fadeIn 0.4s ease both; }
+
+    /* ── STATUS BAR ── */
+    .status-bar {
+      background: rgba(201,149,42,0.08);
+      border: 1px solid rgba(201,149,42,0.2);
+      padding: 0.6rem 1rem;
+      font-size: 0.8rem;
+      color: var(--gold);
+      letter-spacing: 0.04em;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+    .status-dot {
+      width: 8px; height: 8px;
+      background: var(--gold);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.3;} }
+
+    /* ── LANGUAGE TOGGLE ── */
+    .lang-toggle {
+      display: flex;
+      gap: 0;
+      margin-bottom: 1.5rem;
+      border: 1px solid rgba(201,149,42,0.35);
+      width: fit-content;
+    }
+    .lang-btn {
+      background: transparent;
+      border: none;
+      color: rgba(255,255,255,0.45);
+      padding: 0.55rem 1.4rem;
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .lang-btn:first-child { border-right: 1px solid rgba(201,149,42,0.35); }
+    .lang-btn.active {
+      background: var(--gold);
+      color: var(--forest);
+      font-weight: 600;
+    }
+    .lang-btn:not(.active):hover { color: var(--gold); background: rgba(201,149,42,0.08); }
+
+    /* ── PRICE SUGGESTION ── */
+    .price-suggest-box {
+      background: rgba(201,149,42,0.06);
+      border: 1px solid rgba(201,149,42,0.25);
+      padding: 1rem 1.2rem;
+      margin-top: 0.5rem;
+      display: none;
+      animation: fadeIn 0.4s ease both;
+    }
+    .price-suggest-box.visible { display: block; }
+    .price-suggest-header {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: rgba(255,255,255,0.4);
+      margin-bottom: 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .price-options {
+      display: flex;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+      margin-bottom: 0.8rem;
+    }
+    .price-opt {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: var(--cream);
+      padding: 0.5rem 1rem;
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.88rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.1rem;
+      min-width: 80px;
+    }
+    .price-opt:hover { border-color: var(--gold); background: rgba(201,149,42,0.1); }
+    .price-opt.selected { background: var(--gold); color: var(--forest); border-color: var(--gold); }
+    .price-opt .opt-label { font-size: 0.68rem; opacity: 0.6; letter-spacing: 0.06em; text-transform: uppercase; }
+    .price-opt.selected .opt-label { opacity: 0.7; }
+    .price-opt .opt-val { font-size: 1.1rem; font-weight: 600; }
+    .price-reasoning {
+      font-size: 0.78rem;
+      opacity: 0.5;
+      line-height: 1.55;
+      font-style: italic;
+    }
+    .suggest-price-btn {
+      background: transparent;
+      border: 1px solid rgba(201,149,42,0.4);
+      color: var(--gold);
+      padding: 0.45rem 1rem;
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.78rem;
+      cursor: pointer;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      margin-top: 0.5rem;
+    }
+    .suggest-price-btn:hover { background: rgba(201,149,42,0.12); border-color: var(--gold); }
+    .suggest-price-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+    @media(max-width:900px){
+      .app { grid-template-columns: 1fr; }
+      .preview-panel { position: static; }
+      .form-row.triple { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- PASSWORD GATE -->
+<div id="passwordGate" style="
+  position:fixed;inset:0;z-index:9999;
+  background:#f8f5f0;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Jost',sans-serif;
+">
+  <div style="text-align:center;width:100%;max-width:340px;padding:2.5rem 2rem;">
+
+    <!-- Logo -->
+    <div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:1.6rem;letter-spacing:0.16em;text-transform:uppercase;color:#1c1a17;margin-bottom:0.4rem;">O&amp;A Books</div>
+    <div style="font-size:0.62rem;letter-spacing:0.22em;text-transform:uppercase;color:#9a9088;margin-bottom:2.5rem;">Admin Portal</div>
+
+    <!-- Divider -->
+    <div style="width:40px;height:1px;background:#b85c38;margin:0 auto 2.5rem;"></div>
+
+    <div style="font-size:0.68rem;letter-spacing:0.16em;text-transform:uppercase;color:#9a9088;margin-bottom:0.8rem;">Password</div>
+
+    <input id="pwInput" type="password" placeholder="············"
+      style="width:100%;background:white;border:1px solid #e2ddd6;border-bottom:2px solid #1c1a17;color:#1c1a17;padding:0.85rem 1rem;font-family:'Jost',sans-serif;font-size:1rem;outline:none;text-align:center;letter-spacing:0.18em;margin-bottom:1rem;transition:border-color 0.2s;"
+      onkeydown="if(event.key==='Enter')checkPassword()"
+      onfocus="this.style.borderBottomColor='#b85c38'"
+      onblur="this.style.borderBottomColor='#1c1a17'"
+    />
+
+    <button onclick="checkPassword()" style="width:100%;background:#1c1a17;color:white;border:none;padding:0.9rem;font-family:'Jost',sans-serif;font-size:0.72rem;font-weight:500;letter-spacing:0.18em;text-transform:uppercase;cursor:pointer;transition:background 0.2s;"
+      onmouseover="this.style.background='#b85c38'"
+      onmouseout="this.style.background='#1c1a17'"
+    >
+      Enter
+    </button>
+
+    <div id="pwError" style="color:#b85c38;font-size:0.75rem;margin-top:1rem;min-height:1.2em;letter-spacing:0.04em;"></div>
+
+    <div style="font-size:0.6rem;color:#c8c2b8;margin-top:3rem;letter-spacing:0.1em;">oandabooks.com · Private</div>
+  </div>
+</div>
+
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600&family=Jost:wght@300;400;500&display=swap" rel="stylesheet"/>
+
+<script>
+  // ── SET YOUR PASSWORD HERE ────────────────────────────
+  const ADMIN_PASSWORD = '5207$herier!';
+  // ─────────────────────────────────────────────────────
+
+  function checkPassword() {
+    const input = document.getElementById('pwInput').value;
+    if (input === ADMIN_PASSWORD) {
+      sessionStorage.setItem('oa_admin_auth', 'true');
+      document.getElementById('passwordGate').style.display = 'none';
+    } else {
+      const err = document.getElementById('pwError');
+      err.textContent = 'Incorrect password — try again.';
+      document.getElementById('pwInput').value = '';
+      document.getElementById('pwInput').focus();
+      setTimeout(() => err.textContent = '', 3000);
+    }
+  }
+
+  if (sessionStorage.getItem('oa_admin_auth') === 'true') {
+    document.getElementById('passwordGate').style.display = 'none';
+  } else {
+    window.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('pwInput').focus();
+    });
+  }
+</script>
+
+<header>
+  <div class="logo">
+    O&A Books
+    <span>Book Entry Dashboard</span>
+  </div>
+  <div style="display:flex;gap:1.5rem;align-items:center;">
+    <a href="/" target="_blank" style="color:rgba(255,255,255,0.5);font-size:0.72rem;letter-spacing:0.12em;text-transform:uppercase;text-decoration:none;font-family:'Outfit',sans-serif;transition:color 0.2s;border:1px solid rgba(255,255,255,0.15);padding:0.3rem 0.8rem;" onmouseover="this.style.color='rgba(255,255,255,0.9)';this.style.borderColor='rgba(255,255,255,0.4)'" onmouseout="this.style.color='rgba(255,255,255,0.5)';this.style.borderColor='rgba(255,255,255,0.15)'">← Live Store</a>
+    <button onclick="switchTab('entry')" id="tabEntry" style="background:var(--gold);color:var(--forest);border:none;padding:0.35rem 0.9rem;font-family:'Outfit',sans-serif;font-size:0.72rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;">📝 New Book</button>
+    <button onclick="switchTab('inventory')" id="tabInventory" style="background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.7);border:none;padding:0.35rem 0.9rem;font-family:'Outfit',sans-serif;font-size:0.72rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;">📦 Inventory</button>
+    <div class="header-badge">📚 Admin Portal</div>
+  </div>
+</header>
+
+<div class="app">
+  <!-- LEFT COLUMN -->
+  <div class="left-col">
+
+    <div class="status-bar">
+      <div class="status-dot"></div>
+      AI powered by Claude · French & English books · eBay integration ready · AI pricing
+    </div>
+
+    <!-- PHOTO UPLOAD -->
+    <div class="panel">
+      <div class="panel-title">📸 Step 1 — Upload Book Photos</div>
+
+      <!-- Drop zone (shown until first photo) -->
+      <div class="upload-zone" id="uploadZone">
+        <div class="upload-icon">📚</div>
+        <div class="upload-text">Upload book photos</div>
+        <button type="button" id="browseBtn" style="margin-top:0.8rem;background:var(--gold);color:var(--forest);border:none;padding:0.6rem 1.6rem;font-family:'Outfit',sans-serif;font-size:0.82rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;border-radius:3px;">📂 Choose Photos</button>
+        <input type="file" id="fileInput" accept="image/*" multiple style="display:none;"/>
+        <div class="upload-sub" style="margin-top:0.6rem;">Up to 8 photos · JPG, PNG, WEBP · or drag & drop</div>
+      </div>
+
+      <!-- Main large preview -->
+      <div id="main-preview-wrap">
+        <img id="preview-img" src="" alt="Selected photo"/>
+        <div class="main-photo-label">Cover Photo</div>
+        <div class="preview-overlay" id="analyzingOverlay">
+          <div class="spinner"></div>
+          <div class="analyze-text">✨ Claude is reading your book...</div>
+        </div>
+      </div>
+
+      <!-- Thumbnail strip + add more -->
+      <div class="thumb-strip" id="thumbStrip"></div>
+      <div class="photo-count-badge" id="photoCountBadge" style="display:none;">
+        <strong id="photoCount">0</strong> / 8 photos · Click a thumbnail to make it the cover
+      </div>
+
+      <button class="analyze-btn" id="analyzeBtn" onclick="analyzeBook()">
+        ✨ Analyze Cover with AI
+      </button>
+    </div>
+
+    <!-- BOOK DETAILS -->
+    <div class="panel">
+      <div class="panel-title">📖 Step 2 — Book Details</div>
+
+      <!-- Language Toggle -->
+      <div style="margin-bottom:1.2rem;">
+        <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.12em;color:rgba(255,255,255,0.4);margin-bottom:0.6rem;">Book Language</div>
+        <div class="lang-toggle">
+          <button class="lang-btn active" id="langFR" onclick="setLanguage('fr')">🇫🇷 French</button>
+          <button class="lang-btn" id="langEN" onclick="setLanguage('en')">🇺🇸 English</button>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="field">
+          <label>Title (Titre)</label>
+          <input type="text" id="title" placeholder="e.g. Le Petit Prince"/>
+          <div class="ai-badge" id="badge-title">✦ filled by AI</div>
+        </div>
+        <div class="field">
+          <label>Author (Auteur)</label>
+          <input type="text" id="author" placeholder="e.g. Antoine de Saint-Exupéry"/>
+          <div class="ai-badge" id="badge-author">✦ filled by AI</div>
+        </div>
+      </div>
+
+      <div class="form-row triple">
+        <div class="field">
+          <label>Series (Série)</label>
+          <input type="text" id="series" placeholder="e.g. Astérix"/>
+          <div class="ai-badge" id="badge-series">✦ filled by AI</div>
+        </div>
+        <div class="field">
+          <label>Volume #</label>
+          <input type="text" id="volume" placeholder="e.g. 3"/>
+          <div class="ai-badge" id="badge-volume">✦ filled by AI</div>
+        </div>
+        <div class="field">
+          <label>Age Range</label>
+          <select id="ageRange">
+            <option value="">Select...</option>
+            <option value="4-6">4–6 (Early reader)</option>
+            <option value="6-8">6–8 (Beginner)</option>
+            <option value="8-10">8–10 (Elementary)</option>
+            <option value="10-13">10–13 (Middle grade)</option>
+            <option value="13+">13+ (Teen/YA)</option>
+          </select>
+          <div class="ai-badge" id="badge-age">✦ filled by AI</div>
+        </div>
+      </div>
+
+      <div class="form-row triple">
+        <div class="field">
+          <label>Type</label>
+          <select id="bookType">
+            <option value="">Select...</option>
+            <optgroup label="🇫🇷 French">
+              <option value="Roman (novel)">Roman (novel)</option>
+              <option value="Bande dessinée (BD)">Bande dessinée (BD)</option>
+              <option value="Livre illustré">Livre illustré</option>
+              <option value="Livre de classe">Livre de classe</option>
+              <option value="Lot de livres">Lot de livres</option>
+            </optgroup>
+            <optgroup label="🇺🇸 English">
+              <option value="Novel">Novel</option>
+              <option value="Picture book">Picture book</option>
+              <option value="Graphic novel">Graphic novel</option>
+              <option value="Chapter book">Chapter book</option>
+              <option value="Book set / lot">Book set / lot</option>
+            </optgroup>
+          </select>
+          <div class="ai-badge" id="badge-type">✦ filled by AI</div>
+        </div>
+        <div class="field">
+          <label>Price (USD)</label>
+          <div style="display:flex;gap:0.5rem;align-items:stretch;">
+            <input type="number" id="price" placeholder="0.00" step="0.01" min="0" oninput="updatePreview()" style="flex:1;"/>
+            <button class="suggest-price-btn" id="suggestPriceBtn" onclick="suggestPrice()" style="margin-top:0;white-space:nowrap;" title="Get AI price suggestion">✦ Suggest</button>
+          </div>
+          <div class="ai-badge" id="badge-price">✦ price suggested by AI</div>
+          <div class="price-suggest-box" id="priceSuggestBox">
+            <div class="price-suggest-header">✦ AI Price Suggestions</div>
+            <div class="price-options" id="priceOptions"></div>
+            <div class="price-reasoning" id="priceReasoning"></div>
+          </div>
+        </div>
+        <div class="field">
+          <label>Quantity</label>
+          <input type="number" id="qty" placeholder="1" min="1" value="1" oninput="updatePreview()"/>
+        </div>
+      </div>
+
+      <div class="field" style="margin-bottom:1rem;">
+        <label>Condition (État)</label>
+        <div class="condition-btns" id="conditionBtns">
+          <button class="cond-btn" onclick="setCondition('Like New / Comme neuf')">Like New ✨</button>
+          <button class="cond-btn" onclick="setCondition('Very Good / Très bon état')">Very Good 👍</button>
+          <button class="cond-btn" onclick="setCondition('Good / Bon état')">Good ✔</button>
+          <button class="cond-btn" onclick="setCondition('Acceptable / État correct')">Acceptable 📖</button>
+        </div>
+        <div class="ai-badge" id="badge-condition">✦ assessed by AI</div>
+      </div>
+
+      <div class="field">
+        <label>eBay Description (generated by AI — editable)</label>
+        <textarea id="description" placeholder="Upload a photo and click Analyze to auto-generate a description, or type one manually..."></textarea>
+        <div class="ai-badge" id="badge-desc">✦ written by AI</div>
+      </div>
+    </div>
+
+    <!-- SHIPPING -->
+    <div class="panel">
+      <div class="panel-title">📦 Step 3 — Shipping Calculator</div>
+      <div class="shipping-calc">
+        <div class="ship-row">
+          <div class="field">
+            <label>Book Weight</label>
+            <select id="shipWeight">
+              <option value="0.2">Thin (under 200g)</option>
+              <option value="0.4" selected>Standard (200–400g)</option>
+              <option value="0.7">Heavy (400–700g)</option>
+              <option value="1.2">Very heavy (700g+)</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Ship to Zone</label>
+            <select id="shipZone">
+              <option value="local">Local / Same state</option>
+              <option value="regional" selected>Regional (1–3 days)</option>
+              <option value="national">National (4–7 days)</option>
+              <option value="expedited">Expedited (1–2 days)</option>
+            </select>
+          </div>
+          <div class="field" style="justify-content:flex-end;">
+            <label>&nbsp;</label>
+            <button class="ship-calc-btn" onclick="calculateShipping()">✦ Calculate</button>
+          </div>
+        </div>
+        <div class="ship-result">
+          <div>
+            <div class="label">Estimated Shipping</div>
+            <div style="font-size:0.75rem;opacity:0.4;margin-top:0.2rem" id="shipNote">Based on USPS Media Mail + weight</div>
+          </div>
+          <div class="value" id="shipPrice">—</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /left-col -->
+
+  <!-- RIGHT COLUMN -->
+  <div class="preview-panel">
+
+    <!-- EBAY PREVIEW -->
+    <div class="panel" style="padding:0;overflow:hidden;">
+      <div class="ebay-header">
+        <div class="ebay-logo">eBay</div>
+        <div class="ebay-sub">Live Listing Preview</div>
+      </div>
+      <div class="ebay-body">
+        <div class="ebay-book-title" id="prev-title">Add a book to see the listing preview...</div>
+        <div class="ebay-price-row">
+          <div class="ebay-price" id="prev-price">—</div>
+          <div class="ebay-condition" id="prev-condition" style="display:none"></div>
+        </div>
+        <div class="ebay-desc" id="prev-desc">Your AI-generated eBay description will appear here.</div>
+        <div class="ebay-shipping-line" id="prev-shipping">+ Shipping: —</div>
+        <div class="ebay-tags" id="prev-tags"></div>
+      </div>
+    </div>
+
+    <!-- DISCOUNTS -->
+    <div class="panel discount-panel">
+      <div class="panel-title">🏷️ Group Discounts</div>
+
+      <div class="discount-row">
+        <div>
+          <div class="disc-name">
+            Buy 2+ Books
+            <span class="disc-badge">-15%</span>
+          </div>
+          <div class="disc-desc">Applies when buyer purchases 2 or more books</div>
+        </div>
+        <label class="toggle-switch">
+          <input type="checkbox" id="disc2" checked onchange="updatePreview()"/>
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+
+      <div class="discount-row">
+        <div>
+          <div class="disc-name">
+            Full Series Bundle
+            <span class="disc-badge">-25%</span>
+          </div>
+          <div class="disc-desc">Complete series purchase discount</div>
+        </div>
+        <label class="toggle-switch">
+          <input type="checkbox" id="discSeries" checked onchange="updatePreview()"/>
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+
+      <div style="margin-top:1rem;padding-top:1rem;border-top:1px solid rgba(255,255,255,0.06);">
+        <div style="font-size:0.75rem;opacity:0.45;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:0.8rem;">Discount Preview</div>
+        <div id="discountCalc" style="font-size:0.88rem;line-height:2;opacity:0.7;">
+          Enter a price to see discount calculations.
+        </div>
+      </div>
+    </div>
+
+    <!-- POST BUTTONS -->
+    <!-- ACTION BUTTONS -->
+    <div style="display:flex;flex-direction:column;gap:0.7rem;margin-top:0.5rem;">
+      <button class="post-btn" id="publishSiteBtn" onclick="publishToSite()" style="background:var(--gold);color:var(--forest);">
+        🌐 Publish to oandabooks.com
+      </button>
+      <button class="post-btn" id="postBtn" onclick="postToEbay()" style="background:#e53238;color:white;">
+        🛒 Post to eBay
+      </button>
+      <button class="post-btn" id="publishBothBtn" onclick="publishBoth()" style="background:#1c2e1c;color:var(--gold);border:1px solid var(--gold);">
+        ✨ Publish to Site + Post to eBay
+      </button>
+      <button class="save-btn" onclick="saveDraft()">
+        💾 Save as Draft
+      </button>
+    </div>
+
+  </div><!-- /preview-panel -->
+</div><!-- /app -->
+
+<!-- INVENTORY MANAGER -->
+<div id="inventoryView" style="display:none;padding:2rem;max-width:1100px;margin:0 auto;">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;">
+    <div style="font-family:'Outfit',sans-serif;font-size:1.1rem;font-weight:700;color:white;letter-spacing:0.04em;">📦 Inventory Manager</div>
+    <div style="display:flex;gap:0.8rem;">
+      <select id="invFilter" onchange="renderInventory()" style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.8);padding:0.4rem 0.8rem;font-family:'Outfit',sans-serif;font-size:0.78rem;border-radius:4px;">
+        <option value="all">All books</option>
+        <option value="available">Available</option>
+        <option value="ebay">On eBay</option>
+        <option value="sold">Sold</option>
+      </select>
+    </div>
+  </div>
+  <div id="inventoryGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1rem;"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  let currentCondition = '';
+  let uploadedImageBase64 = '';
+  let currentLang = 'fr'; // 'fr' or 'en'
+
+  function setLanguage(lang) {
+    currentLang = lang;
+    document.getElementById('langFR').classList.toggle('active', lang === 'fr');
+    document.getElementById('langEN').classList.toggle('active', lang === 'en');
+    // Update placeholder text
+    const titleEl = document.getElementById('title');
+    const authorEl = document.getElementById('author');
+    if (lang === 'en') {
+      titleEl.placeholder = 'e.g. Harry Potter and the Sorcerer\'s Stone';
+      authorEl.placeholder = 'e.g. J.K. Rowling';
+      document.getElementById('analyzeBtn').textContent = '✨ Analyze with AI (English)';
+    } else {
+      titleEl.placeholder = 'e.g. Le Petit Prince';
+      authorEl.placeholder = 'e.g. Antoine de Saint-Exupéry';
+      document.getElementById('analyzeBtn').textContent = '✨ Analyze with AI';
+    }
+  }
+
+  // ── FILE UPLOAD ──────────────────────────────────────
+  const fileInput = document.getElementById('fileInput');
+  const uploadZone = document.getElementById('uploadZone');
+  const browseBtn = document.getElementById('browseBtn');
+
+  let photos = [];
+  let primaryIndex = 0;
+
+  // Browse button click
+  browseBtn.addEventListener('click', function(e) {
+    e.stopPropagation();
+    fileInput.click();
+  });
+
+  // File selected
+  fileInput.addEventListener('change', function(e) {
+    handleFiles(Array.from(e.target.files));
+    e.target.value = '';
+  });
+
+  // Drag and drop
+  uploadZone.addEventListener('dragover', e => { e.preventDefault(); uploadZone.classList.add('drag-over'); });
+  uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('drag-over'));
+  uploadZone.addEventListener('drop', e => {
+    e.preventDefault();
+    uploadZone.classList.remove('drag-over');
+    handleFiles(Array.from(e.dataTransfer.files));
+  });
+
+  function handleFiles(files) {
+    const remaining = 8 - photos.length;
+    const toLoad = files.filter(f => f.type.startsWith('image/')).slice(0, remaining);
+    if (!toLoad.length) { showToast('⚠️ Max 8 photos reached', '#e67e22'); return; }
+
+    let loaded = 0;
+    toLoad.forEach(file => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const dataUrl = e.target.result;
+        photos.push({ dataUrl, base64: dataUrl.split(',')[1] });
+        loaded++;
+        if (loaded === toLoad.length) renderPhotos();
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  function renderPhotos() {
+    if (!photos.length) return;
+
+    // Hide initial drop zone, show main preview
+    uploadZone.style.display = 'none';
+    document.getElementById('main-preview-wrap').style.display = 'block';
+    document.getElementById('preview-img').src = photos[primaryIndex].dataUrl;
+    document.getElementById('analyzeBtn').style.display = 'block';
+
+    // Update label
+    const label = document.querySelector('.main-photo-label');
+    label.textContent = primaryIndex === 0 ? '⭐ Cover Photo' : `Photo ${primaryIndex + 1}`;
+
+    // Thumbnail strip
+    const strip = document.getElementById('thumbStrip');
+    strip.innerHTML = '';
+    strip.classList.add('visible');
+
+    photos.forEach((photo, i) => {
+      const wrap = document.createElement('div');
+      wrap.className = 'thumb-wrap' + (i === primaryIndex ? ' active' : '');
+      wrap.title = i === 0 ? 'Cover (used for AI analysis)' : `Photo ${i + 1} — click to set as cover`;
+
+      const img = document.createElement('img');
+      img.src = photo.dataUrl;
+      img.alt = `Photo ${i + 1}`;
+
+      const del = document.createElement('button');
+      del.className = 'thumb-del';
+      del.textContent = '×';
+      del.title = 'Remove this photo';
+      del.onclick = (e) => { e.stopPropagation(); deletePhoto(i); };
+
+      wrap.appendChild(img);
+      wrap.appendChild(del);
+
+      if (i === primaryIndex) {
+        const badge = document.createElement('div');
+        badge.className = 'thumb-primary-badge';
+        badge.textContent = i === 0 ? '⭐ Cover' : 'Cover';
+        wrap.appendChild(badge);
+      }
+
+      wrap.onclick = () => { primaryIndex = i; renderPhotos(); };
+      strip.appendChild(wrap);
+    });
+
+    // Add more tile (if under limit)
+    if (photos.length < 8) {
+      const addTile = document.createElement('div');
+      addTile.className = 'thumb-add';
+      addTile.innerHTML = `<span style="font-size:1.6rem;">+</span><span>Add more</span>`;
+      const addInput = document.createElement('input');
+      addInput.type = 'file';
+      addInput.accept = 'image/*';
+      addInput.multiple = true;
+      addInput.onchange = (e) => { handleFiles(Array.from(e.target.files)); e.target.value=''; };
+      addTile.appendChild(addInput);
+      strip.appendChild(addTile);
+    }
+
+    // Count badge
+    const badge = document.getElementById('photoCountBadge');
+    badge.style.display = 'block';
+    document.getElementById('photoCount').textContent = photos.length;
+
+    // Update AI button text
+    document.getElementById('analyzeBtn').textContent =
+      `✨ Analyze Cover Photo with AI`;
+
+    // Update uploadedImageBase64 to primary photo
+    uploadedImageBase64 = photos[primaryIndex].base64;
+  }
+
+  function deletePhoto(index) {
+    photos.splice(index, 1);
+    if (!photos.length) {
+      // Reset everything
+      uploadZone.style.display = 'block';
+      document.getElementById('main-preview-wrap').style.display = 'none';
+      document.getElementById('thumbStrip').classList.remove('visible');
+      document.getElementById('thumbStrip').innerHTML = '';
+      document.getElementById('photoCountBadge').style.display = 'none';
+      document.getElementById('analyzeBtn').style.display = 'none';
+      primaryIndex = 0;
+      uploadedImageBase64 = '';
+      return;
+    }
+    if (primaryIndex >= photos.length) primaryIndex = 0;
+    renderPhotos();
+  }
+
+  // ── AI ANALYSIS (single call — details + pricing) ────
+  async function analyzeBook() {
+    if (!uploadedImageBase64) return;
+
+    const overlay = document.getElementById('analyzingOverlay');
+    overlay.classList.add('analyzing');
+    document.getElementById('analyzeBtn').disabled = true;
+
+    const isFrench = currentLang === 'fr';
+    const prompt = `You are an expert in children's books and a second-hand book pricing specialist for the US eBay market.
+
+This is a ${isFrench ? 'FRENCH' : 'ENGLISH'} book. Analyze this book cover and return ONLY a valid JSON object (no markdown, no extra text) with ALL of these fields:
+{
+  "title": "exact book title",
+  "author": "author full name",
+  "series": "series name if part of a series, else empty string",
+  "volume": "volume number if applicable, else empty string",
+  "age_range": "one of: 4-6, 6-8, 8-10, 10-13, 13+",
+  "book_type": ${isFrench
+    ? '"one of: Roman (novel), Bande dessinée (BD), Livre illustré, Livre de classe, Lot de livres"'
+    : '"one of: Novel, Picture book, Graphic novel, Chapter book, Book set / lot"'},
+  "condition_estimate": "one of: Like New / Comme neuf, Very Good / Très bon état, Good / Bon état, Acceptable / État correct",
+  "ebay_description": "A compelling 3-4 sentence eBay listing description in English. ${isFrench ? 'Mention the French title, why it\'s great for French immersion students, the reading level, and honest condition.' : 'Mention the title, why kids love it, the reading level, and honest condition.'} Warm and inviting tone — family-run shop.",
+  "tags": ["5-7 relevant eBay search tags"],
+  "price_budget": <number — low-end price, good deal for buyer>,
+  "price_fair": <number — fair market price based on eBay sold listings>,
+  "price_premium": <number — premium price for hard-to-find or collectible copies>,
+  "price_reasoning": "1-2 sentences on pricing rationale mentioning scarcity and condition"
+}
+
+${isFrench ? 'French immersion books in the US are 30-50% more expensive than English equivalents due to scarcity.' : ''}
+Round prices to nearest $0.50. If you cannot clearly read the cover, make your best educated guess.`;
+
+    try {
+      const response = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': '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',
+          'anthropic-version': '2023-06-01',
+          'anthropic-dangerous-direct-browser-access': 'true'
+        },
+        body: JSON.stringify({
+          model: 'claude-haiku-4-5-20251001',
+          max_tokens: 1200,
+          messages: [{
+            role: 'user',
+            content: [
+              { type: 'image', source: { type: 'base64', media_type: 'image/jpeg', data: uploadedImageBase64 } },
+              { type: 'text', text: prompt }
+            ]
+          }]
+        })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        const errMsg = data.error?.message || JSON.stringify(data);
+        showToast('⚠️ API error: ' + errMsg, '#e67e22');
+        console.error('Anthropic API error:', data);
+        overlay.classList.remove('analyzing');
+        document.getElementById('analyzeBtn').disabled = false;
+        document.getElementById('analyzeBtn').textContent = '✦ Re-analyze Cover';
+        return;
+      }
+
+      const rawText = data.content.map(c => c.text || '').join('');
+      const clean = rawText.replace(/```json|```/g, '').trim();
+      const book = JSON.parse(clean);
+
+      // Fill form fields
+      fillForm(book);
+
+      // Also populate price suggestions from same response
+      if (book.price_budget || book.price_fair || book.price_premium) {
+        const box = document.getElementById('priceSuggestBox');
+        box.classList.add('visible');
+        const optsEl = document.getElementById('priceOptions');
+        optsEl.innerHTML = '';
+        [
+          { key: 'price_budget',  label: 'Budget' },
+          { key: 'price_fair',    label: 'Fair' },
+          { key: 'price_premium', label: 'Premium' }
+        ].forEach(({ key, label }) => {
+          const val = book[key];
+          if (!val) return;
+          const btn = document.createElement('button');
+          btn.className = 'price-opt';
+          btn.innerHTML = `<span class="opt-label">${label}</span><span class="opt-val">$${parseFloat(val).toFixed(2)}</span>`;
+          btn.onclick = () => {
+            document.querySelectorAll('.price-opt').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+            document.getElementById('price').value = parseFloat(val).toFixed(2);
+            document.getElementById('price').classList.add('ai-filled');
+            document.getElementById('badge-price').classList.add('visible');
+            updatePreview();
+          };
+          optsEl.appendChild(btn);
+        });
+        if (book.price_reasoning) {
+          document.getElementById('priceReasoning').textContent = book.price_reasoning;
+        }
+        showToast('✅ Book analyzed + prices suggested!');
+      } else {
+        showToast('✅ Book analyzed successfully!');
+      }
+
+    } catch (err) {
+      console.error('AI error:', err);
+      showToast('⚠️ ' + (err.message || 'Could not analyze — check console for details'), '#e67e22');
+    }
+
+    overlay.classList.remove('analyzing');
+    document.getElementById('analyzeBtn').disabled = false;
+    document.getElementById('analyzeBtn').textContent = '✦ Re-analyze Cover';
+  }
+          messages: [{
+            role: 'user',
+            content: [
+              { type: 'image', source: { type: 'base64', media_type: 'image/jpeg', data: uploadedImageBase64 } },
+              { type: 'text', text: prompt }
+            ]
+          }]
+        })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        const errMsg = data.error?.message || JSON.stringify(data);
+        showToast('⚠️ API error: ' + errMsg, '#e67e22');
+        console.error('Anthropic API error:', data);
+        overlay.classList.remove('analyzing');
+        document.getElementById('analyzeBtn').disabled = false;
+        document.getElementById('analyzeBtn').textContent = '✦ Re-analyze Cover';
+        return;
+      }
+
+      const rawText = data.content.map(c => c.text || '').join('');
+      const clean = rawText.replace(/```json|```/g, '').trim();
+      const book = JSON.parse(clean);
+
+      fillForm(book);
+    } catch (err) {
+      console.error('AI error:', err);
+      showToast('⚠️ ' + (err.message || 'Could not analyze — check console for details'), '#e67e22');
+    }
+
+    overlay.classList.remove('analyzing');
+    document.getElementById('analyzeBtn').disabled = false;
+    document.getElementById('analyzeBtn').textContent = '✦ Re-analyze Cover';
+  }
+
+  function fillForm(book) {
+    const fields = {
+      'title': book.title,
+      'author': book.author,
+      'series': book.series,
+      'volume': book.volume,
+      'description': book.ebay_description
+    };
+    for (const [id, val] of Object.entries(fields)) {
+      if (val) {
+        const el = document.getElementById(id);
+        if (el) { el.value = val; el.classList.add('ai-filled'); }
+        const badge = document.getElementById('badge-' + id);
+        if (badge) badge.classList.add('visible');
+      }
+    }
+    if (book.age_range) { document.getElementById('ageRange').value = book.age_range; document.getElementById('ageRange').classList.add('ai-filled'); document.getElementById('badge-age').classList.add('visible'); }
+    if (book.book_type) { document.getElementById('bookType').value = book.book_type; document.getElementById('bookType').classList.add('ai-filled'); document.getElementById('badge-type').classList.add('visible'); }
+    if (book.condition_estimate) { setCondition(book.condition_estimate); document.getElementById('badge-condition').classList.add('visible'); }
+    if (book.tags) { window._currentTags = book.tags; }
+    // Reset price box — will be repopulated by analyzeBook
+    document.getElementById('priceSuggestBox').classList.remove('visible');
+    document.getElementById('badge-price').classList.remove('visible');
+    updatePreview();
+  }
+
+  // ── CONDITION ────────────────────────────────────────
+  function setCondition(val) {
+    currentCondition = val;
+    document.querySelectorAll('.cond-btn').forEach(b => {
+      b.classList.toggle('active', b.textContent.replace(/[✨👍✔📖]/g,'').trim().split(' ')[0] === val.split(' ')[0]);
+    });
+    updatePreview();
+  }
+
+  // suggestPrice now just reminds user to use the analyze button
+  function suggestPrice() {
+    if (!document.getElementById('title').value) {
+      showToast('⚠️ Upload a photo and click Analyze to get price suggestions', '#e67e22');
+      return;
+    }
+    showToast('💡 Price suggestions appear automatically after AI analysis', '#3498db');
+  }
+
+  // ── SHIPPING CALCULATOR ──────────────────────────────
+  function calculateShipping() {
+    const weight = parseFloat(document.getElementById('shipWeight').value);
+    const zone = document.getElementById('shipZone').value;
+
+    const rates = {
+      local:     { base: 3.49, perKg: 0.5, label: 'USPS First Class' },
+      regional:  { base: 3.99, perKg: 0.8, label: 'USPS Media Mail' },
+      national:  { base: 4.99, perKg: 1.2, label: 'USPS Media Mail' },
+      expedited: { base: 9.99, perKg: 2.5, label: 'USPS Priority Mail' }
+    };
+
+    const rate = rates[zone];
+    const qty = parseInt(document.getElementById('qty').value) || 1;
+    const total = (rate.base + (weight * rate.perKg)) * (1 + (qty - 1) * 0.3);
+
+    const rounded = Math.ceil(total * 4) / 4;
+    document.getElementById('shipPrice').textContent = '$' + rounded.toFixed(2);
+    document.getElementById('shipNote').textContent = rate.label + ' · Based on ' + (weight * 1000) + 'g';
+    document.getElementById('prev-shipping').textContent = '+ Shipping: $' + rounded.toFixed(2) + ' (' + rate.label + ')';
+  }
+
+  // ── UPDATE PREVIEW ──────────────────────────────────
+  function updatePreview() {
+    const title = document.getElementById('title').value;
+    const author = document.getElementById('author').value;
+    const price = parseFloat(document.getElementById('price').value);
+    const desc = document.getElementById('description').value;
+    const qty = parseInt(document.getElementById('qty').value) || 1;
+
+    document.getElementById('prev-title').textContent =
+      title ? (author ? `${title} — ${author}` : title) : 'Add a book to see the listing preview...';
+
+    document.getElementById('prev-price').textContent =
+      price ? '$' + price.toFixed(2) : '—';
+
+    if (currentCondition) {
+      const cEl = document.getElementById('prev-condition');
+      cEl.textContent = currentCondition;
+      cEl.style.display = 'inline-block';
+    }
+
+    document.getElementById('prev-desc').textContent =
+      desc || 'Your AI-generated eBay description will appear here.';
+
+    // Tags
+    const tagsEl = document.getElementById('prev-tags');
+    tagsEl.innerHTML = '';
+    const tags = window._currentTags || (currentLang === 'fr' ? ['French book', 'French immersion', 'children\'s books'] : ['English book', 'children\'s book', 'kids reading']);
+    tags.forEach(t => {
+      const span = document.createElement('span');
+      span.className = 'ebay-tag';
+      span.textContent = t;
+      tagsEl.appendChild(span);
+    });
+
+    // Discount calc
+    if (price) {
+      const disc2Active = document.getElementById('disc2').checked;
+      const discSeriesActive = document.getElementById('discSeries').checked;
+      let html = '';
+
+      html += `<div>1 book: <strong style="color:var(--gold)">$${price.toFixed(2)}</strong></div>`;
+      if (disc2Active) {
+        const d = price * 0.85;
+        html += `<div>2+ books: <strong style="color:var(--gold)">$${d.toFixed(2)} each</strong> <span style="opacity:0.4;font-size:0.78rem">(-15%)</span></div>`;
+      }
+      if (discSeriesActive) {
+        const d = price * 0.75;
+        html += `<div>Full series: <strong style="color:var(--gold)">$${d.toFixed(2)} each</strong> <span style="opacity:0.4;font-size:0.78rem">(-25%)</span></div>`;
+      }
+      document.getElementById('discountCalc').innerHTML = html;
+    } else {
+      document.getElementById('discountCalc').textContent = 'Enter a price to see discount calculations.';
+    }
+  }
+
+  // Listen for input changes
+  ['title','author','description','price','qty'].forEach(id => {
+    document.getElementById(id).addEventListener('input', updatePreview);
+  });
+
+  // ── TAB SWITCHING ─────────────────────────────────────
+  function switchTab(tab) {
+    const isInventory = tab === 'inventory';
+    document.querySelector('.app').style.display = isInventory ? 'none' : 'grid';
+    document.getElementById('inventoryView').style.display = isInventory ? 'block' : 'none';
+    document.getElementById('tabEntry').style.background = isInventory ? 'rgba(255,255,255,0.1)' : 'var(--gold)';
+    document.getElementById('tabEntry').style.color = isInventory ? 'rgba(255,255,255,0.7)' : 'var(--forest)';
+    document.getElementById('tabInventory').style.background = isInventory ? 'var(--gold)' : 'rgba(255,255,255,0.1)';
+    document.getElementById('tabInventory').style.color = isInventory ? 'var(--forest)' : 'rgba(255,255,255,0.7)';
+    if (isInventory) renderInventory();
+  }
+
+  // ── INVENTORY STORAGE ─────────────────────────────────
+  function getInventory() {
+    return JSON.parse(localStorage.getItem('oa_inventory') || '[]');
+  }
+  function saveInventory(inv) {
+    localStorage.setItem('oa_inventory', JSON.stringify(inv));
+    // Also update oa_published (what the store reads) — only available books
+    const published = inv.filter(b => b.status !== 'sold');
+    localStorage.setItem('oa_published', JSON.stringify(published));
+  }
+
+  // ── PUBLISH TO SITE ───────────────────────────────────
+  function publishToSite() {
+    const book = collectBookData();
+    if (!book) return;
+    book.id = 'book_' + Date.now();
+    book.status = 'available'; // available | ebay | sold
+    book.listedOn = []; // ['site', 'ebay']
+    book.listedOn.push('site');
+    book.ebayUrl = '';
+    book.createdAt = new Date().toLocaleString();
+
+    const inv = getInventory();
+    inv.unshift(book);
+    saveInventory(inv);
+    showToast('✅ Published to oandabooks.com!');
+    resetForm();
+  }
+
+  // ── POST TO EBAY ──────────────────────────────────────
+  function postToEbay(bookId) {
+    const title = bookId
+      ? getInventory().find(b => b.id === bookId)?.title
+      : document.getElementById('title').value;
+    const price = bookId
+      ? getInventory().find(b => b.id === bookId)?.price
+      : document.getElementById('price').value;
+
+    if (!title || !price) { showToast('⚠️ Fill in title and price first', '#e67e22'); return; }
+
+    // Open eBay listing creator pre-filled
+    const isFrench = bookId
+      ? getInventory().find(b => b.id === bookId)?.lang === 'fr'
+      : currentLang === 'fr';
+    const query = encodeURIComponent(title + (isFrench ? ' French book immersion' : ' children book'));
+    const ebayUrl = `https://www.ebay.com/sell/create-listing?title=${query}`;
+
+    // If posting from inventory, update status
+    if (bookId) {
+      const inv = getInventory();
+      const book = inv.find(b => b.id === bookId);
+      if (book) {
+        if (!book.listedOn.includes('ebay')) book.listedOn.push('ebay');
+        book.status = book.listedOn.includes('site') ? book.status : 'ebay';
+        if (book.status === 'available') book.status = 'available'; // keep available
+        book.ebayListedAt = new Date().toLocaleString();
+        saveInventory(inv);
+        renderInventory();
+      }
+
+      // Ask for eBay listing URL to save
+      setTimeout(() => {
+        const url = prompt('Once your eBay listing is live, paste its URL here to save it (or press Cancel to skip):');
+        if (url && url.startsWith('http')) {
+          const inv2 = getInventory();
+          const b2 = inv2.find(b => b.id === bookId);
+          if (b2) { b2.ebayUrl = url; saveInventory(inv2); renderInventory(); showToast('✅ eBay URL saved!'); }
+        }
+      }, 2000);
+    }
+
+    window.open(ebayUrl, '_blank');
+    showToast('🛒 Opening eBay listing creator...');
+  }
+
+  // ── PUBLISH BOTH ──────────────────────────────────────
+  function publishBoth() {
+    const book = collectBookData();
+    if (!book) return;
+    book.id = 'book_' + Date.now();
+    book.status = 'available';
+    book.listedOn = ['site', 'ebay'];
+    book.ebayUrl = '';
+    book.createdAt = new Date().toLocaleString();
+
+    const inv = getInventory();
+    inv.unshift(book);
+    saveInventory(inv);
+
+    // Open eBay
+    const isFrench = currentLang === 'fr';
+    const query = encodeURIComponent(book.title + (isFrench ? ' French book immersion' : ' children book'));
+    window.open(`https://www.ebay.com/sell/create-listing?title=${query}`, '_blank');
+
+    showToast('✅ Published to site + opening eBay!');
+    resetForm();
+
+    // Ask for eBay URL
+    setTimeout(() => {
+      const url = prompt('Once your eBay listing is live, paste its URL here (or Cancel to skip):');
+      if (url && url.startsWith('http')) {
+        const inv2 = getInventory();
+        const b2 = inv2.find(b => b.id === book.id);
+        if (b2) { b2.ebayUrl = url; saveInventory(inv2); showToast('✅ eBay link saved!'); }
+      }
+    }, 2500);
+  }
+
+  // ── COLLECT FORM DATA ─────────────────────────────────
+  function collectBookData() {
+    const title = document.getElementById('title').value.trim();
+    const price  = parseFloat(document.getElementById('price').value);
+    if (!title) { showToast('⚠️ Please enter a title', '#e67e22'); return null; }
+    if (!price)  { showToast('⚠️ Please enter a price', '#e67e22'); return null; }
+    return {
+      title,
+      author:      document.getElementById('author').value.trim(),
+      series:      document.getElementById('series').value.trim(),
+      volume:      document.getElementById('volume').value.trim(),
+      age:         document.getElementById('ageRange').value,
+      type:        document.getElementById('bookType').value,
+      condition:   currentCondition,
+      price,
+      lang:        currentLang,
+      description: document.getElementById('description').value.trim(),
+      photo:       photos.length ? photos[primaryIndex].dataUrl : null,
+      photoCount:  photos.length,
+      sold:        false,
+    };
+  }
+
+  // ── RESET FORM ────────────────────────────────────────
+  function resetForm() {
+    ['title','author','series','volume','description','price'].forEach(id => {
+      document.getElementById(id).value = '';
+    });
+    photos = []; primaryIndex = 0; uploadedImageBase64 = '';
+    document.getElementById('uploadZone').style.display = 'block';
+    document.getElementById('main-preview-wrap').style.display = 'none';
+    document.getElementById('thumbStrip').classList.remove('visible');
+    document.getElementById('thumbStrip').innerHTML = '';
+    document.getElementById('photoCountBadge').style.display = 'none';
+    document.getElementById('analyzeBtn').style.display = 'none';
+    document.querySelectorAll('.ai-badge').forEach(b => b.classList.remove('visible'));
+    document.querySelectorAll('input,textarea,select').forEach(el => el.classList.remove('ai-filled'));
+    currentCondition = '';
+    document.querySelectorAll('.cond-btn').forEach(b => b.classList.remove('active'));
+    updatePreview();
+  }
+
+  // ── RENDER INVENTORY ──────────────────────────────────
+  function renderInventory() {
+    const inv = getInventory();
+    const filter = document.getElementById('invFilter').value;
+    const filtered = inv.filter(b => filter === 'all' || b.status === filter);
+    const grid = document.getElementById('inventoryGrid');
+
+    const counts = { available: inv.filter(b=>b.status==='available').length, ebay: inv.filter(b=>b.listedOn&&b.listedOn.includes('ebay')&&b.status!=='sold').length, sold: inv.filter(b=>b.status==='sold').length };
+
+    if (!inv.length) {
+      grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:4rem 1rem;color:rgba(255,255,255,0.3);font-size:0.9rem;">No books yet. Add your first book using the New Book tab!</div>`;
+      return;
+    }
+
+    // Summary bar
+    let html = `<div style="grid-column:1/-1;display:flex;gap:1.5rem;margin-bottom:0.5rem;flex-wrap:wrap;">
+      <div style="background:rgba(39,174,96,0.15);border:1px solid rgba(39,174,96,0.3);padding:0.5rem 1rem;border-radius:4px;font-size:0.78rem;color:#2ecc71;font-weight:600;">✅ ${counts.available} available on site</div>
+      <div style="background:rgba(231,76,60,0.15);border:1px solid rgba(231,76,60,0.3);padding:0.5rem 1rem;border-radius:4px;font-size:0.78rem;color:#e74c3c;font-weight:600;">🛒 ${counts.ebay} on eBay</div>
+      <div style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);padding:0.5rem 1rem;border-radius:4px;font-size:0.78rem;color:rgba(255,255,255,0.4);font-weight:600;">📦 ${counts.sold} sold</div>
+    </div>`;
+
+    filtered.forEach(book => {
+      const statusColor = book.status==='sold' ? '#e74c3c' : book.status==='ebay' ? '#f39c12' : '#2ecc71';
+      const statusLabel = book.status==='sold' ? '📦 Sold' : book.status==='ebay' ? '🛒 eBay only' : '✅ Available';
+      const onEbay = book.listedOn && book.listedOn.includes('ebay');
+      const onSite = book.listedOn && book.listedOn.includes('site');
+
+      html += `<div style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:8px;overflow:hidden;display:flex;flex-direction:column;">
+        <div style="display:flex;gap:0.8rem;padding:1rem;">
+          <div style="width:56px;height:72px;background:rgba(0,0,0,0.3);flex-shrink:0;overflow:hidden;border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;">
+            ${book.photo ? `<img src="${book.photo}" style="width:100%;height:100%;object-fit:cover;"/>` : '📖'}
+          </div>
+          <div style="flex:1;min-width:0;">
+            <div style="font-weight:700;font-size:0.9rem;color:white;margin-bottom:0.15rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${book.title}</div>
+            <div style="font-size:0.75rem;color:rgba(255,255,255,0.45);margin-bottom:0.4rem;">${book.author||''}${book.series?' · '+book.series:''}</div>
+            <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:0.4rem;">
+              <span style="background:rgba(255,255,255,0.08);font-size:0.65rem;padding:0.15rem 0.5rem;border-radius:3px;color:rgba(255,255,255,0.5);">${book.lang==='fr'?'🇫🇷 French':'🇺🇸 English'}</span>
+              <span style="background:rgba(255,255,255,0.08);font-size:0.65rem;padding:0.15rem 0.5rem;border-radius:3px;color:rgba(255,255,255,0.5);">${book.condition||''}</span>
+              ${onSite?`<span style="background:rgba(39,174,96,0.2);font-size:0.65rem;padding:0.15rem 0.5rem;border-radius:3px;color:#2ecc71;">🌐 On site</span>`:''}
+              ${onEbay?`<span style="background:rgba(231,76,60,0.2);font-size:0.65rem;padding:0.15rem 0.5rem;border-radius:3px;color:#e74c3c;">🛒 On eBay</span>`:''}
+            </div>
+            <div style="font-family:'Outfit',sans-serif;font-size:1rem;font-weight:700;color:var(--gold);">$${parseFloat(book.price||0).toFixed(2)}</div>
+          </div>
+        </div>
+
+        <!-- STATUS + ACTIONS -->
+        <div style="border-top:1px solid rgba(255,255,255,0.08);padding:0.7rem 1rem;display:flex;flex-wrap:wrap;gap:0.5rem;align-items:center;">
+          <span style="font-size:0.68rem;font-weight:700;color:${statusColor};letter-spacing:0.06em;margin-right:auto;">${statusLabel}</span>
+
+          ${book.status !== 'sold' ? `
+            ${!onEbay ? `<button onclick="postToEbay('${book.id}')" style="background:#e53238;color:white;border:none;padding:0.3rem 0.7rem;font-size:0.68rem;font-weight:700;letter-spacing:0.06em;cursor:pointer;border-radius:3px;">🛒 Post to eBay</button>` : ''}
+            ${book.ebayUrl ? `<a href="${book.ebayUrl}" target="_blank" style="background:rgba(231,76,60,0.15);color:#e74c3c;border:1px solid rgba(231,76,60,0.3);padding:0.3rem 0.7rem;font-size:0.68rem;font-weight:700;text-decoration:none;border-radius:3px;">View on eBay ↗</a>` : ''}
+            <button onclick="markSold('${book.id}','site')" style="background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.6);border:1px solid rgba(255,255,255,0.1);padding:0.3rem 0.7rem;font-size:0.68rem;font-weight:700;cursor:pointer;border-radius:3px;">✓ Sold on Site</button>
+            <button onclick="markSold('${book.id}','ebay')" style="background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.6);border:1px solid rgba(255,255,255,0.1);padding:0.3rem 0.7rem;font-size:0.68rem;font-weight:700;cursor:pointer;border-radius:3px;">✓ Sold on eBay</button>
+          ` : `
+            <span style="font-size:0.72rem;color:rgba(255,255,255,0.3);">Sold ${book.soldAt||''}</span>
+            <button onclick="deleteBook('${book.id}')" style="background:rgba(231,76,60,0.15);color:#e74c3c;border:1px solid rgba(231,76,60,0.2);padding:0.3rem 0.7rem;font-size:0.68rem;font-weight:700;cursor:pointer;border-radius:3px;">🗑 Remove</button>
+          `}
+        </div>
+      </div>`;
+    });
+
+    grid.innerHTML = html;
+  }
+
+  // ── MARK SOLD ─────────────────────────────────────────
+  function markSold(id, platform) {
+    const inv = getInventory();
+    const book = inv.find(b => b.id === id);
+    if (!book) return;
+    if (!confirm(`Mark "${book.title}" as sold on ${platform === 'ebay' ? 'eBay' : 'your site'}? This will remove it from oandabooks.com.`)) return;
+    book.status = 'sold';
+    book.sold = true;
+    book.soldOn = platform;
+    book.soldAt = new Date().toLocaleDateString();
+    saveInventory(inv);
+    renderInventory();
+    showToast(`📦 Marked as sold on ${platform === 'ebay' ? 'eBay' : 'site'} — removed from store`);
+  }
+
+  // ── DELETE BOOK ───────────────────────────────────────
+  function deleteBook(id) {
+    if (!confirm('Permanently delete this book from your inventory?')) return;
+    const inv = getInventory().filter(b => b.id !== id);
+    saveInventory(inv);
+    renderInventory();
+    showToast('🗑 Book removed');
+  }
+
+  // ── SAVE DRAFT (kept for compatibility) ───────────────
+  function saveDraft() {
+    const draft = collectBookData();
+    if (!draft) return;
+    draft.savedAt = new Date().toLocaleString();
+    const drafts = JSON.parse(sessionStorage.getItem('bookDrafts') || '[]');
+    drafts.push(draft);
+    sessionStorage.setItem('bookDrafts', JSON.stringify(drafts));
+    showToast(`💾 Draft saved: "${draft.title}"`);
+  }
+
+  // ── TOAST ──────────────────────────────────────────
+  function showToast(msg, color = '#27ae60') {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.style.background = color;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3500);
+  }
+
+  // Auto-calculate shipping on page load with defaults
+  calculateShipping();
+</script>
+</body>
+</html>
