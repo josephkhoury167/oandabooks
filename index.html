@@ -3,8 +3,49 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <meta name="description" content="O&A Books — Pre-loved French immersion and English books for kids. Buy direct, better prices. Flat $4.99 shipping."/>
-  <title>O&A Books</title>
+  <meta name="description" content="Buy pre-loved French immersion and English books for kids. O&A Books sells used children's books direct — better prices, flat $4.99 shipping, 7-day returns."/>
+  <meta name="keywords" content="french immersion books, french immersion books for kids, used french immersion books, buy french childrens books, pre-loved kids books, used children's books, french immersion reading"/>
+  <meta name="robots" content="index, follow"/>
+  <meta name="author" content="O&A Books"/>
+  <link rel="canonical" href="https://oandabooks.com/"/>
+
+  <!-- Open Graph (Facebook, iMessage previews) -->
+  <meta property="og:type" content="website"/>
+  <meta property="og:url" content="https://oandabooks.com/"/>
+  <meta property="og:title" content="O&A Books — French Immersion & Kids Books"/>
+  <meta property="og:description" content="Pre-loved French immersion and English books for kids. Better prices because we sell direct. Flat $4.99 shipping across the US."/>
+  <meta property="og:image" content="https://oandabooks.com/og-image.jpg"/>
+  <meta property="og:site_name" content="O&A Books"/>
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image"/>
+  <meta name="twitter:title" content="O&A Books — French Immersion & Kids Books"/>
+  <meta name="twitter:description" content="Pre-loved French immersion and English books for kids. Better prices, flat $4.99 shipping."/>
+
+  <!-- Structured Data: LocalBusiness + Store -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Store",
+    "name": "O&A Books",
+    "description": "Student-run store selling pre-loved French immersion and English children's books. Better prices because we sell direct.",
+    "url": "https://oandabooks.com",
+    "email": "hello@oandabooks.com",
+    "currenciesAccepted": "USD",
+    "paymentAccepted": "PayPal, Credit Card",
+    "priceRange": "$",
+    "hasOfferCatalog": {
+      "@type": "OfferCatalog",
+      "name": "French Immersion & English Children's Books",
+      "itemListElement": [
+        { "@type": "Offer", "itemOffered": { "@type": "Product", "name": "French Immersion Books for Kids" } },
+        { "@type": "Offer", "itemOffered": { "@type": "Product", "name": "Used English Children's Books" } }
+      ]
+    }
+  }
+  </script>
+
+  <title>O&A Books — French Immersion &amp; Kids Books | Buy Used Children's Books</title>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet"/>
   <style>
     :root {
@@ -176,8 +217,8 @@
 <section class="hero">
   <div class="hero-text">
     <div class="hero-eyebrow">Student-run · Est. 2025</div>
-    <h1>Books that<br>kids <em>actually</em><br>love.</h1>
-    <p class="hero-desc">Pre-loved French immersion and English titles, carefully selected and honestly described. Better prices because we sell direct.</p>
+    <h1>French immersion<br>&amp; kids books<br><em>kids love.</em></h1>
+    <p class="hero-desc">Pre-loved French immersion and English children's books, carefully selected and honestly described. Buy used books for kids direct — better prices, flat $4.99 shipping across the US.</p>
     <a class="hero-cta" href="#catalog">Browse the collection</a>
   </div>
   <div class="hero-visual">
@@ -220,11 +261,11 @@
 </section>
 
 <section class="why-section">
-  <h2 class="why-title">Why buy from <em>us?</em></h2>
-  <p class="why-sub">We're kids selling books to other kids. Here's why that's a good thing.</p>
+  <h2 class="why-title">Why buy used books <em>from us?</em></h2>
+  <p class="why-sub">We're kids selling French immersion and English books to other families. Here's why that's a good thing.</p>
   <div class="why-grid">
-    <div class="why-card"><span class="why-icon">💰</span><h3>Better prices</h3><p>No marketplace fees means we charge less and earn more. You save every time.</p></div>
-    <div class="why-card"><span class="why-icon">📖</span><h3>Kid-curated</h3><p>We've read these books. We know which ones are worth it.</p></div>
+    <div class="why-card"><span class="why-icon">💰</span><h3>Better prices</h3><p>No marketplace fees means we charge less for used children's books. You save every time.</p></div>
+    <div class="why-card"><span class="why-icon">📖</span><h3>Kid-curated</h3><p>We've read these French immersion and English books. We know which ones are worth it.</p></div>
     <div class="why-card"><span class="why-icon">🔎</span><h3>Honest descriptions</h3><p>Every flaw is listed. What you see is exactly what arrives.</p></div>
     <div class="why-card"><span class="why-icon">↩</span><h3>Easy returns</h3><p>Not happy? Email us within 7 days and we'll make it right.</p></div>
   </div>
@@ -234,7 +275,7 @@
   <div class="footer-links">
     <a href="index.html">Shop</a>
     <a href="policy.html">Shipping &amp; Returns</a>
-    <a href="mailto:hello@oandabooks.com">Contact</a>
+    <a href="/cdn-cgi/l/email-protection#3a525f5656557a555b545e5b585555514914595557">Contact</a>
   </div>
   <p>© 2025 <strong>O&amp;A Books</strong> — oandabooks.com · Secure checkout via PayPal</p>
 </footer>
@@ -261,7 +302,7 @@
   </div>
 </div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 const PAYPALME    = 'josephkhoury167';
 const STRIPE_LINK = '';
 const SHIPPING    = 4.99;
@@ -441,11 +482,4 @@ function checkoutPayPal() {
 }
 
 function checkoutStripe() {
-  if (!STRIPE_LINK) { alert('Card payments coming soon! Please use PayPal for now.'); return; }
-  window.open(STRIPE_LINK, '_blank');
-}
-
-init();
-</script>
-</body>
-</html>
+  if (!STRIPE_LINK) 
