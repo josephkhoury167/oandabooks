@@ -1578,36 +1578,17 @@ window.addEventListener('DOMContentLoaded', function() {
       ? '<div style="margin-bottom:1.2rem;"><label style="font-size:0.7rem;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;color:#9a9088;display:block;margin-bottom:0.4rem;">Search Tags</label><div style="display:flex;flex-wrap:wrap;gap:0.4rem;">' + tags.map(t => '<span style="background:#ede8e0;padding:0.2rem 0.6rem;font-size:0.72rem;border-radius:2px;">' + t + '</span>').join('') + '</div></div>'
       : '';
 
-    modal.innerHTML =
-      '<div style="background:#f8f5f0;max-width:600px;width:100%;max-height:90vh;overflow-y:auto;border-radius:4px;padding:2rem;font-family:Jost,sans-serif;">' +
-        '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;">' +
-          '<h2 style="font-family:Cormorant Garamond,serif;font-size:1.4rem;font-weight:500;">Post to eBay</h2>' +
-          '<button onclick="document.getElementById('ebayModal').remove()" style="background:none;border:none;font-size:1.4rem;cursor:pointer;color:#9a9088;">✕</button>' +
-        '</div>' +
-        '<div style="margin-bottom:1.2rem;">' +
-          '<label style="font-size:0.7rem;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;color:#9a9088;display:block;margin-bottom:0.4rem;">Listing Title</label>' +
-          '<div style="display:flex;gap:0.5rem;">' +
-            '<input id="eb-title" readonly value="' + ebayTitle.replace(/"/g, '&quot;') + '" style="flex:1;background:#fff;border:1px solid #e2ddd6;padding:0.5rem 0.7rem;font-family:Jost,sans-serif;font-size:0.85rem;color:#1c1a17;"/>' +
-            '<button onclick="navigator.clipboard.writeText(document.getElementById('eb-title').value);this.textContent='✅';setTimeout(()=>this.textContent='Copy',1500)" style="background:#1c1a17;color:#fff;border:none;padding:0.5rem 1rem;cursor:pointer;font-size:0.72rem;white-space:nowrap;">Copy</button>' +
-          '</div>' +
-          '<div style="font-size:0.65rem;color:#9a9088;margin-top:0.3rem;">' + ebayTitle.length + '/80 characters</div>' +
-        '</div>' +
-        '<div style="margin-bottom:1.2rem;">' +
-          '<label style="font-size:0.7rem;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;color:#9a9088;display:block;margin-bottom:0.4rem;">Price</label>' +
-          '<div style="display:flex;gap:0.5rem;">' +
-            '<input readonly value="$' + parseFloat(price).toFixed(2) + '" style="width:100px;background:#fff;border:1px solid #e2ddd6;padding:0.5rem 0.7rem;font-family:Jost,sans-serif;font-size:0.85rem;color:#1c1a17;"/>' +
-            '<button onclick="navigator.clipboard.writeText('' + parseFloat(price).toFixed(2) + '');this.textContent='✅';setTimeout(()=>this.textContent='Copy',1500)" style="background:#1c1a17;color:#fff;border:none;padding:0.5rem 1rem;cursor:pointer;font-size:0.72rem;">Copy</button>' +
-          '</div>' +
-        '</div>' +
-        '<div style="margin-bottom:1.2rem;">' +
-          '<label style="font-size:0.7rem;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;color:#9a9088;display:block;margin-bottom:0.4rem;">Description</label>' +
-          '<textarea id="eb-desc" readonly rows="8" style="width:100%;background:#fff;border:1px solid #e2ddd6;padding:0.5rem 0.7rem;font-family:Jost,sans-serif;font-size:0.82rem;color:#1c1a17;resize:vertical;display:block;">' + ebayDesc.replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</textarea>' +
-          '<button onclick="navigator.clipboard.writeText(document.getElementById('eb-desc').value);this.textContent='✅ Copied!';setTimeout(()=>this.textContent='Copy description',1500)" style="margin-top:0.4rem;background:#1c1a17;color:#fff;border:none;padding:0.5rem 1rem;cursor:pointer;font-size:0.72rem;">Copy description</button>' +
-        '</div>' +
-        tagsHtml +
-        '<a href="https://www.ebay.com/sell/create-listing" target="_blank" style="display:block;width:100%;background:#e53238;color:#fff;text-align:center;padding:0.9rem;text-decoration:none;font-family:Jost,sans-serif;font-size:0.8rem;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;margin-top:0.5rem;box-sizing:border-box;">Open eBay Listing Form →</a>' +
-        '<p style="font-size:0.68rem;color:#9a9088;text-align:center;margin-top:0.7rem;">Copy each field above, then paste into the eBay form</p>' +
-      '</div>';
+    modal.innerHTML = `
+      <div style="background:#f8f5f0;max-width:600px;width:100%;max-height:90vh;overflow-y:auto;padding:2rem;position:relative;border-radius:2px;">
+        <button onclick="document.getElementById('ebayModal').remove()" style="position:absolute;top:1rem;right:1rem;background:none;border:none;font-size:1.4rem;cursor:pointer;color:#9a9088;">✕</button>
+        <div style="font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:500;margin-bottom:1rem;">eBay Listing Details</div>
+        <p style="font-size:0.78rem;color:#4a4640;margin-bottom:1rem;">Copy each section into eBay. <a href="https://www.ebay.com/sell/create-listing" target="_blank" style="color:#b85c38;">Open eBay →</a></p>
+        <pre id="ebayListingText" style="white-space:pre-wrap;font-size:0.78rem;background:#fff;padding:1.2rem;border:1px solid #e2ddd6;line-height:1.8;color:#1c1a17;">${listing}</pre>
+        <button onclick="navigator.clipboard.writeText(document.getElementById('ebayListingText').textContent).then(()=>this.textContent='✅ Copied!').catch(()=>this.textContent='Select & copy manually')"
+          style="margin-top:1rem;width:100%;background:#1c1a17;color:white;border:none;padding:0.85rem;font-family:'Jost',sans-serif;font-size:0.78rem;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;cursor:pointer;">
+          📋 Copy All to Clipboard
+        </button>
+      </div>`;
 
     document.body.appendChild(modal);
 
@@ -1643,10 +1624,7 @@ window.addEventListener('DOMContentLoaded', function() {
     inv.unshift(book);
     saveInventory(inv);
 
-    // Open eBay
-    const isFrench = currentLang === 'fr';
-    const query = encodeURIComponent(book.title + (isFrench ? ' French book immersion' : ' children book'));
-    window.open(`https://www.ebay.com/sell/create-listing?title=${query}`, '_blank');
+
 
     showToast('✅ Published to site + opening eBay!');
     resetForm();
