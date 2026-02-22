@@ -1533,10 +1533,18 @@ window.addEventListener('DOMContentLoaded', function() {
   // ── POST TO EBAY ──────────────────────────────────────
   function postToEbay(bookId) {
     const inv = getInventory();
-    const book = bookId ? inv.find(b => b.id === bookId) : null;
+    let book = bookId ? inv.find(b => b.id === bookId) : null;
 
-    const title    = book ? book.title       : document.getElementById('title').value;
-    const price    = book ? book.price       : document.getElementById('price').value;
+    // If called from entry tab with no bookId, use form values
+    // If form is empty (e.g. just after publish), use most recent inventory book
+    const formTitle = document.getElementById('title').value.trim();
+    const formPrice = document.getElementById('price').value;
+    if (!book && !bookId && !formTitle && inv.length) {
+      book = inv[0]; // most recently published
+    }
+
+    const title    = book ? book.title       : formTitle;
+    const price    = book ? book.price       : formPrice;
     const desc     = book ? book.description : document.getElementById('description').value;
     const cond     = book ? book.condition   : currentCondition;
     const series   = book ? book.series      : document.getElementById('series').value;
