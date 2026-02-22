@@ -1532,48 +1532,101 @@ window.addEventListener('DOMContentLoaded', function() {
 
   // ── POST TO EBAY ──────────────────────────────────────
   function postToEbay(bookId) {
-    const title = bookId
-      ? getInventory().find(b => b.id === bookId)?.title
-      : document.getElementById('title').value;
-    const price = bookId
-      ? getInventory().find(b => b.id === bookId)?.price
-      : document.getElementById('price').value;
+    const inv = getInventory();
+    const book = bookId ? inv.find(b => b.id === bookId) : null;
 
-    if (!title || !price) { showToast('⚠️ Fill in title and price first', '#e67e22'); return; }
+    const title    = book ? book.title       : document.getElementById('title').value;
+    const price    = book ? book.price       : document.getElementById('price').value;
+    const desc     = book ? book.description : document.getElementById('description').value;
+    const cond     = book ? book.condition   : currentCondition;
+    const series   = book ? book.series      : document.getElementById('series').value;
+    const author   = book ? book.author      : document.getElementById('author').value;
+    const age      = book ? book.age         : document.getElementById('ageRange').value;
+    const isFrench = book ? book.lang === 'fr' : currentLang === 'fr';
+    const tags     = (book ? book.tags : window._currentTags) || [];
 
-    // Open eBay listing creator pre-filled
-    const isFrench = bookId
-      ? getInventory().find(b => b.id === bookId)?.lang === 'fr'
-      : currentLang === 'fr';
-    const query = encodeURIComponent(title + (isFrench ? ' French book immersion' : ' children book'));
-    const ebayUrl = `https://www.ebay.com/sell/create-listing?title=${query}`;
+    if (!title || !price) { showToast('Fill in title and price first', '#e67e22'); return; }
 
-    // If posting from inventory, update status
-    if (bookId) {
-      const inv = getInventory();
-      const book = inv.find(b => b.id === bookId);
-      if (book) {
-        if (!book.listedOn.includes('ebay')) book.listedOn.push('ebay');
-        book.status = book.listedOn.includes('site') ? book.status : 'ebay';
-        if (book.status === 'available') book.status = 'available'; // keep available
-        book.ebayListedAt = new Date().toLocaleString();
-        saveInventory(inv);
-        renderInventory();
-      }
+    const ebayTitle = [
+      title,
+      series ? '(' + series + ')' : '',
+      isFrench ? 'French Immersion' : '',
+      "Children's Book",
+      cond ? cond.split('/')[0].trim() : ''
+    ].filter(Boolean).join(' ').substring(0, 80);
 
-      // Ask for eBay listing URL to save
+    const ebayDesc = [
+      desc || '',
+      '',
+      'Author: ' + (author || 'See cover'),
+      series ? 'Series: ' + series : '',
+      age ? 'Ages: ' + age : '',
+      isFrench ? 'Perfect for French immersion students.' : '',
+      'Condition: ' + (cond || 'Good'),
+      '',
+      'Fast shipping · 7-day returns · Family-run shop',
+    ].filter(v => v !== undefined).join('\n');
+
+    const existing = document.getElementById('ebayModal');
+    if (existing) existing.remove();
+
+    const modal = document.createElement('div');
+    modal.id = 'ebayModal';
+    modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:9999;display:flex;align-items:center;justify-content:center;padding:1rem;';
+
+    const tagsHtml = tags.length
+      ? '<div style="margin-bottom:1.2rem;"><label style="font-size:0.7rem;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;color:#9a9088;display:block;margin-bottom:0.4rem;">Search Tags</label><div style="display:flex;flex-wrap:wrap;gap:0.4rem;">' + tags.map(t => '<span style="background:#ede8e0;padding:0.2rem 0.6rem;font-size:0.72rem;border-radius:2px;">' + t + '</span>').join('') + '</div></div>'
+      : '';
+
+    modal.innerHTML =
+      '<div style="background:#f8f5f0;max-width:600px;width:100%;max-height:90vh;overflow-y:auto;border-radius:4px;padding:2rem;font-family:Jost,sans-serif;">' +
+        '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;">' +
+          '<h2 style="font-family:Cormorant Garamond,serif;font-size:1.4rem;font-weight:500;">Post to eBay</h2>' +
+          '<button onclick="document.getElementById('ebayModal').remove()" style="background:none;border:none;font-size:1.4rem;cursor:pointer;color:#9a9088;">✕</button>' +
+        '</div>' +
+        '<div style="margin-bottom:1.2rem;">' +
+          '<label style="font-size:0.7rem;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;color:#9a9088;display:block;margin-bottom:0.4rem;">Listing Title</label>' +
+          '<div style="display:flex;gap:0.5rem;">' +
+            '<input id="eb-title" readonly value="' + ebayTitle.replace(/"/g, '&quot;') + '" style="flex:1;background:#fff;border:1px solid #e2ddd6;padding:0.5rem 0.7rem;font-family:Jost,sans-serif;font-size:0.85rem;color:#1c1a17;"/>' +
+            '<button onclick="navigator.clipboard.writeText(document.getElementById('eb-title').value);this.textContent='✅';setTimeout(()=>this.textContent='Copy',1500)" style="background:#1c1a17;color:#fff;border:none;padding:0.5rem 1rem;cursor:pointer;font-size:0.72rem;white-space:nowrap;">Copy</button>' +
+          '</div>' +
+          '<div style="font-size:0.65rem;color:#9a9088;margin-top:0.3rem;">' + ebayTitle.length + '/80 characters</div>' +
+        '</div>' +
+        '<div style="margin-bottom:1.2rem;">' +
+          '<label style="font-size:0.7rem;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;color:#9a9088;display:block;margin-bottom:0.4rem;">Price</label>' +
+          '<div style="display:flex;gap:0.5rem;">' +
+            '<input readonly value="$' + parseFloat(price).toFixed(2) + '" style="width:100px;background:#fff;border:1px solid #e2ddd6;padding:0.5rem 0.7rem;font-family:Jost,sans-serif;font-size:0.85rem;color:#1c1a17;"/>' +
+            '<button onclick="navigator.clipboard.writeText('' + parseFloat(price).toFixed(2) + '');this.textContent='✅';setTimeout(()=>this.textContent='Copy',1500)" style="background:#1c1a17;color:#fff;border:none;padding:0.5rem 1rem;cursor:pointer;font-size:0.72rem;">Copy</button>' +
+          '</div>' +
+        '</div>' +
+        '<div style="margin-bottom:1.2rem;">' +
+          '<label style="font-size:0.7rem;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;color:#9a9088;display:block;margin-bottom:0.4rem;">Description</label>' +
+          '<textarea id="eb-desc" readonly rows="8" style="width:100%;background:#fff;border:1px solid #e2ddd6;padding:0.5rem 0.7rem;font-family:Jost,sans-serif;font-size:0.82rem;color:#1c1a17;resize:vertical;display:block;">' + ebayDesc.replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</textarea>' +
+          '<button onclick="navigator.clipboard.writeText(document.getElementById('eb-desc').value);this.textContent='✅ Copied!';setTimeout(()=>this.textContent='Copy description',1500)" style="margin-top:0.4rem;background:#1c1a17;color:#fff;border:none;padding:0.5rem 1rem;cursor:pointer;font-size:0.72rem;">Copy description</button>' +
+        '</div>' +
+        tagsHtml +
+        '<a href="https://www.ebay.com/sell/create-listing" target="_blank" style="display:block;width:100%;background:#e53238;color:#fff;text-align:center;padding:0.9rem;text-decoration:none;font-family:Jost,sans-serif;font-size:0.8rem;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;margin-top:0.5rem;box-sizing:border-box;">Open eBay Listing Form →</a>' +
+        '<p style="font-size:0.68rem;color:#9a9088;text-align:center;margin-top:0.7rem;">Copy each field above, then paste into the eBay form</p>' +
+      '</div>';
+
+    document.body.appendChild(modal);
+
+    if (bookId && book) {
+      if (!book.listedOn) book.listedOn = [];
+      if (!book.listedOn.includes('ebay')) book.listedOn.push('ebay');
+      book.ebayListedAt = new Date().toLocaleString();
+      saveInventory(inv);
+      renderInventory();
+
       setTimeout(() => {
-        const url = prompt('Once your eBay listing is live, paste its URL here to save it (or press Cancel to skip):');
+        const url = prompt('Once your eBay listing is live, paste its URL here to save it (or Cancel to skip):');
         if (url && url.startsWith('http')) {
           const inv2 = getInventory();
           const b2 = inv2.find(b => b.id === bookId);
-          if (b2) { b2.ebayUrl = url; saveInventory(inv2); renderInventory(); showToast('✅ eBay URL saved!'); }
+          if (b2) { b2.ebayUrl = url; saveInventory(inv2); renderInventory(); showToast('eBay URL saved!'); }
         }
-      }, 2000);
+      }, 3000);
     }
-
-    window.open(ebayUrl, '_blank');
-    showToast('🛒 Opening eBay listing creator...');
   }
 
   // ── PUBLISH BOTH ──────────────────────────────────────
