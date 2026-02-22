@@ -686,7 +686,7 @@
   <div style="text-align:center;width:100%;max-width:340px;padding:2.5rem 2rem;">
 
     <!-- Logo -->
-    <div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:1.6rem;letter-spacing:0.16em;text-transform:uppercase;color:#1c1a17;margin-bottom:0.4rem;">O&amp;A Books</div>
+    <div style="margin-bottom:0.4rem;"><img src="oanda-logo-final.svg" alt="O&A Books" style="height:80px;width:auto;"/></div>
     <div style="font-size:0.62rem;letter-spacing:0.22em;text-transform:uppercase;color:#9a9088;margin-bottom:2.5rem;">Admin Portal</div>
 
     <!-- Divider -->
@@ -1583,7 +1583,7 @@ window.addEventListener('DOMContentLoaded', function() {
         <button onclick="document.getElementById('ebayModal').remove()" style="position:absolute;top:1rem;right:1rem;background:none;border:none;font-size:1.4rem;cursor:pointer;color:#9a9088;">✕</button>
         <div style="font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:500;margin-bottom:1rem;">eBay Listing Details</div>
         <p style="font-size:0.78rem;color:#4a4640;margin-bottom:1rem;">Copy each section into eBay. <a href="https://www.ebay.com/sell/create-listing" target="_blank" style="color:#b85c38;">Open eBay →</a></p>
-        <pre id="ebayListingText" style="white-space:pre-wrap;font-size:0.78rem;background:#fff;padding:1.2rem;border:1px solid #e2ddd6;line-height:1.8;color:#1c1a17;">${listing}</pre>
+        <pre id="ebayListingText" style="white-space:pre-wrap;font-size:0.78rem;background:#fff;padding:1.2rem;border:1px solid #e2ddd6;line-height:1.8;color:#1c1a17;">TITLE: ${ebayTitle}\n\nPRICE: $${parseFloat(price).toFixed(2)}\n\nCONDITION: ${cond || 'Good'}\n\nDESCRIPTION:\n${ebayDesc}\n\nTAGS: ${tags.join(', ') || 'children book, picture book'}</pre>
         <button onclick="navigator.clipboard.writeText(document.getElementById('ebayListingText').textContent).then(()=>this.textContent='✅ Copied!').catch(()=>this.textContent='Select & copy manually')"
           style="margin-top:1rem;width:100%;background:#1c1a17;color:white;border:none;padding:0.85rem;font-family:'Jost',sans-serif;font-size:0.78rem;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;cursor:pointer;">
           📋 Copy All to Clipboard
@@ -1795,18 +1795,19 @@ window.addEventListener('DOMContentLoaded', function() {
   calculateShipping();
 
   // Expose functions needed by onclick handlers to global scope
-  window.analyzeBook     = analyzeBook;
+  window.analyzeBook       = analyzeBook;
   window.calculateShipping = calculateShipping;
-  window.deleteBook      = deleteBook;
-  window.markSold        = markSold;
-  window.postToEbay      = postToEbay;
-  window.publishBoth     = publishBoth;
-  window.publishToSite   = publishToSite;
-  window.saveDraft       = saveDraft;
-  window.setCondition    = setCondition;
-  window.setLanguage     = setLanguage;
-  window.suggestPrice    = suggestPrice;
-  window.switchTab       = switchTab;
+  window.deleteBook        = deleteBook;
+  window.markSold          = markSold;
+  window.postToEbay        = postToEbay;
+  window.publishBoth       = publishBoth;
+  window.publishToSite     = publishToSite;
+  window.saveDraft         = saveDraft;
+  window.setCondition      = setCondition;
+  window.setLanguage       = setLanguage;
+  window.suggestPrice      = suggestPrice;
+  window.switchTab         = switchTab;
+  window.updatePreview     = updatePreview;
 
 }); // end DOMContentLoaded
 </script>
